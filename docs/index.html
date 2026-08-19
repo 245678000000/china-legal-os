@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>China Legal OS — 面向中国大陆企业法务的模块化 AI 工作系统</title>
+    <meta name="description" content="中国企业法务的模块化 AI 工作系统。事实分类、法定要件拆解、证据矩阵核验、红队对抗与落地商业决策。">
+    <style>
+        :root {
+            --bg-deep: #070b14;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --bg-card-hover: rgba(30, 41, 59, 0.85);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(56, 189, 248, 0.3);
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.15);
+            --indigo: #6366f1;
+            --emerald: #10b981;
+            --amber: #f59e0b;
+            --rose: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 40%),
+                linear-gradient(to bottom, #070b14, #0b1120);
+        }
+
+        /* 顶部发光网格暗纹 */
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 700px;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 导航栏 */
+        header {
+            border-bottom: 1px solid var(--border-subtle);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(7, 11, 20, 0.8);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #0284c7, #6366f1);
+            color: #fff;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            font-family: var(--font-mono);
+        }
+
+        .logo-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Hero 区域 */
+        .hero {
+            padding: 80px 0 60px 0;
+            text-align: center;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 19px;
+            color: var(--text-muted);
+            max-width: 780px;
+            margin: 0 auto 36px auto;
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 60px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(2, 132, 199, 0.35);
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(2, 132, 199, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(30, 41, 59, 0.6);
+            color: var(--text-main);
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(51, 65, 85, 0.8);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 指标统计栏 */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 70px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .metric-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .metric-val {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: var(--font-mono);
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* 终端预览卡片 */
+        .terminal-box {
+            background: #090d16;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            margin-bottom: 90px;
+            text-align: left;
+        }
+
+        .terminal-header {
+            background: #111827;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .terminal-title {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+        }
+
+        .terminal-body {
+            padding: 24px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+
+        .t-prompt { color: #38bdf8; font-weight: 600; }
+        .t-cmd { color: #f8fafc; }
+        .t-green { color: #34d399; }
+        .t-yellow { color: #fbbf24; }
+        .t-dim { color: #64748b; }
+
+        /* 核心对比区 */
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-tag {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 34px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            margin-bottom: 14px;
+        }
+
+        .section-desc {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .comparison-table-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 90px;
+        }
+
+        table.comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        table.comp-table th {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        table.comp-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            vertical-align: top;
+        }
+
+        table.comp-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .col-bad { color: #f87171; }
+        .col-good { color: #38bdf8; font-weight: 500; }
+
+        /* 交互式流水线与门禁区 */
+        .pipeline-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 90px;
+            position: relative;
+        }
+
+        .gate-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.25s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .gate-card:hover, .gate-card.active {
+            border-color: var(--primary);
+            background: var(--bg-card-hover);
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.12);
+            transform: translateY(-3px);
+        }
+
+        .gate-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            margin-bottom: 14px;
+        }
+        .gb-1 { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+        .gb-2 { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+        .gb-3 { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .gb-4 { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+        .gate-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .gate-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* 实战案例沙盒区 */
+        .sandbox-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 90px;
+        }
+
+        .sandbox-tabs {
+            display: flex;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid var(--border-subtle);
+            overflow-x: auto;
+        }
+
+        .s-tab {
+            padding: 16px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .s-tab:hover {
+            color: var(--text-main);
+        }
+
+        .s-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .sandbox-content {
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .s-panel {
+            background: #090e18;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .s-panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .s-box {
+            font-family: var(--font-mono);
+            font-size: 12.5px;
+            line-height: 1.65;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        /* 14 大模块矩阵卡片 */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 90px;
+        }
+
+        .module-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 22px;
+            transition: all 0.2s;
+        }
+
+        .module-item:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .module-type {
+            font-size: 11px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .module-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .module-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* 安装生态与快速复制 */
+        .install-box {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8));
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 90px;
+        }
+
+        .code-copy-bar {
+            background: #090d16;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 640px;
+            margin: 24px auto 0 auto;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: #38bdf8;
+        }
+
+        .btn-copy {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* 页脚 */
+        footer {
+            border-top: 1px solid var(--border-subtle);
+            padding: 40px 0;
+            color: var(--text-dim);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 900px) {
+            .hero-title { font-size: 36px; }
+            .metrics-grid, .pipeline-grid, .modules-grid { grid-template-columns: 1fr; }
+            .sandbox-content { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+
+    <!-- 顶部导航 -->
+    <header>
+        <div class="container nav-inner">
+            <a href="#" class="logo-wrap">
+                <span class="logo-badge">CLOS</span>
+                <span class="logo-title">China Legal OS</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">核心机制</a></li>
+                <li><a href="#pipeline">四道 Gate 架构</a></li>
+                <li><a href="#sandbox">实战案例沙盒</a></li>
+                <li><a href="#modules">14大业务模块</a></li>
+                <li><a href="#evals">基准评测</a></li>
+                <li><a href="#install">快速接入</a></li>
+            </ul>
+            <a href="https://github.com/245678000000/china-legal-os" target="_blank" class="nav-cta">GitHub 仓库</a>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Hero 区域 -->
+        <section class="hero">
+            <div class="hero-tag">
+                <span>⚡</span> China Legal OS v0.1 · 工业级企业法务 AI 系统
+            </div>
+            <h1 class="hero-title">
+                面向中国大陆企业法务的<br><span>模块化 AI 工作系统</span>
+            </h1>
+            <p class="hero-subtitle">
+                不是玩具式的法律问答，不是空洞的单体 Prompt。<br>
+                让通用大模型按企业法务真实决策流深度协同：事实分类 ➔ 要件拆解 ➔ 证据链核验 ➔ 红队对抗 ➔ 落地商业七问。
+            </p>
+            <div class="hero-actions">
+                <a href="#install" class="btn-primary">一键安装到 Agent</a>
+                <a href="#sandbox" class="btn-secondary">查看 4 套实战案例</a>
+            </div>
+
+            <!-- 指标统计卡片 -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-val">100%</div>
+                    <div class="metric-label">Layer 1 门禁通过率 (14/14)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-val">0</div>
+                    <div class="metric-label">自产虚拟案号 (绝对禁令拦截)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-val">100 / 100</div>
+                    <div class="metric-label">全系统健康体检得分 (Doctor)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-val">14 + 8</div>
+                    <div class="metric-label">实操业务模块 + 高保真模板</div>
+                </div>
+            </div>
+
+            <!-- 终端交互动效盒子 -->
+            <div class="terminal-box">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="terminal-dot dot-red"></div>
+                        <div class="terminal-dot dot-yellow"></div>
+                        <div class="terminal-dot dot-green"></div>
+                    </div>
+                    <div class="terminal-title">bash — clos review --html report.html</div>
+                </div>
+                <div class="terminal-body">
+                    <span class="t-dim">$</span> <span class="t-prompt">./bin/clos</span> <span class="t-cmd">review -t "审查采购协议" -f contract.txt --html report.html</span><br>
+                    <span class="t-dim">[*] [Triage] 检测到标的超百万采购合同，自动分流至 Lane B (contract-review)</span><br>
+                    <span class="t-green">[✓] [G1 事实闸] 识别 Confirmed 事实 4 项，锁定验收标准缺失</span><br>
+                    <span class="t-green">[✓] [G2 法源闸] 引用民法典第497/852条〔条号未核验〕，无自造案号</span><br>
+                    <span class="t-green">[✓] [G3 证据闸] 数值推演：违约金日万分之五上限20%需连续违约 400 天触顶</span><br>
+                    <span class="t-green">[✓] [G4 交付闸] 8列审查表 + 商业落地七问 + Review Basis 抬头加载完毕</span><br>
+                    <span class="t-yellow">[+] 交付物 HTML 报表已成功导出至: report.html (健康度 100/100)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 核心机制对比 -->
+        <section id="features">
+            <div class="section-header">
+                <span class="section-tag">Why China Legal OS</span>
+                <h2 class="section-title">告别单体 Prompt 幻觉，回归严谨法务工作流</h2>
+                <p class="section-desc">深度对比通用 AI 问答与工业级 China Legal OS 在真实法务业务场景下的表现</p>
+            </div>
+
+            <div class="comparison-table-wrap">
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">法务核心场景</th>
+                            <th style="width: 40%;">普通单体 Prompt / 法律问答</th>
+                            <th style="width: 40%;">China Legal OS 严密工作流</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>用户主张事实</strong></td>
+                            <td class="col-bad">“对方窃取了商业秘密” ➔ 顺着主张直接定性分析</td>
+                            <td class="col-good">归入 Alleged，拆解法定三要件，由证据矩阵重新定性</td>
+                        </tr>
+                        <tr>
+                            <td><strong>法条条号引用</strong></td>
+                            <td class="col-bad">直接生成“根据《X法》第 N 条”（条号高频幻觉）</td>
+                            <td class="col-good">输出规则内容 + 标明〔条号未核验〕+ 纳入待核验清单</td>
+                        </tr>
+                        <tr>
+                            <td><strong>案例与案号检索</strong></td>
+                            <td class="col-bad">生成看似逼真的虚拟判决案号（自产假案例）</td>
+                            <td class="col-good">绝对禁令（0 个虚拟案号），转为生成标准化检索指引</td>
+                        </tr>
+                        <tr>
+                            <td><strong>证据缺失场景</strong></td>
+                            <td class="col-bad">照常给出高度确定的胜诉或有效结论</td>
+                            <td class="col-good">四元 min 规则：min(法律, 证据, 事实, 法源) 强制下调</td>
+                        </tr>
+                        <tr>
+                            <td><strong>商业决策落地</strong></td>
+                            <td class="col-bad">“存在法律风险，建议谨慎咨询律师”（废话套话）</td>
+                            <td class="col-good">必答商业落地七问：最不坏路径 / Fallback / 谁审批 / 今日动作</td>
+                        </tr>
+                        <tr>
+                            <td><strong>抗辩思维推演</strong></td>
+                            <td class="col-bad">单向论证己方有利观点，忽视对方抗辩</td>
+                            <td class="col-good">强制 Red Team 对抗，评估对方最强抗辩与薄弱环节</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 四道 Gate 架构流水线 -->
+        <section id="pipeline">
+            <div class="section-header">
+                <span class="section-tag">Architecture</span>
+                <h2 class="section-title">四道 Gate 质量门禁 & 三条 Lane 泳道</h2>
+                <p class="section-desc">每一份输出在交付前必须通过严格的门禁系统拦截与结构化约束</p>
+            </div>
+
+            <div class="pipeline-grid">
+                <div class="gate-card active">
+                    <span class="gate-badge gb-1">GATE 1</span>
+                    <h3 class="gate-title">G1 事实分类闸</h3>
+                    <p class="gate-text">提取并锁定基础事实，严格区分 Confirmed（已证实）、Alleged（主张）、Disputed（争议）与 Missing（缺失），严禁直接推定。</p>
+                </div>
+                <div class="gate-card">
+                    <span class="gate-badge gb-2">GATE 2</span>
+                    <h3 class="gate-title">G2 法源闸</h3>
+                    <p class="gate-text">按法律位阶（L1-L4）核验法源有效性，严禁虚构未出台法规，条号均带〔条号未核验〕标记，触发 M2 案号绝对禁令。</p>
+                </div>
+                <div class="gate-card">
+                    <span class="gate-badge gb-3">GATE 3</span>
+                    <h3 class="gate-title">G3 证据闸</h3>
+                    <p class="gate-text">构建争点与证据逐项映射矩阵，执行四元 min 规则，在保密措施或规章制度等关键证据不足时，强制下调结论确定性。</p>
+                </div>
+                <div class="gate-card">
+                    <span class="gate-badge gb-4">GATE 4</span>
+                    <h3 class="gate-title">G4 交付闸</h3>
+                    <p class="gate-text">装配标准化 Review Basis 抬头，回答商业落地七问，生成待核验清单，确保输出与 12 个强约束 JSON Schema 100% 对齐。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 实战案例沙盒 -->
+        <section id="sandbox">
+            <div class="section-header">
+                <span class="section-tag">Case Sandbox</span>
+                <h2 class="section-title">4 套端到端实战案例在线沙盒</h2>
+                <p class="section-desc">探索 China Legal OS 处理真实合同审查、商业秘密维权与劳动人事争议的全流程交付</p>
+            </div>
+
+            <div class="sandbox-wrap">
+                <div class="sandbox-tabs">
+                    <div class="s-tab active" onclick="switchCase(0)">案例 01：150万技术采购合同审查 (Lane B)</div>
+                    <div class="s-tab" onclick="switchCase(1)">案例 02：离职算法主管泄密维权 (Lane C)</div>
+                    <div class="s-tab" onclick="switchCase(2)">案例 03：考核不合格辞退与2N测算 (Lane B)</div>
+                    <div class="s-tab" onclick="switchCase(3)">案例 04：合同未写日期公章效力 (Lane A)</div>
+                </div>
+                <div class="sandbox-content">
+                    <div class="s-panel">
+                        <div class="s-panel-title">
+                            <span>原始输入 & 材料片段</span>
+                            <span style="color: var(--primary);">INPUT</span>
+                        </div>
+                        <div class="s-box" id="case-input">大数据技术服务采购协议（标的 150 万元）
+甲方：北京知远数据科技有限公司（采购方）
+乙方：华东云智信息系统有限公司（服务方）
+
+第三条 知识产权归属
+3.1 乙方在履行过程中形成的所有源代码、模型所有权独家归属于乙方。
+3.2 甲方仅享有普通使用许可。
+
+第四条 违约金与责任限制
+4.1 迟延违约金：日万分之五，累计上限 20%。
+4.2 责任上限：乙方承担的全部赔偿总额不得超过已付金额的 10%。</div>
+                    </div>
+                    <div class="s-panel">
+                        <div class="s-panel-title">
+                            <span>China Legal OS 结构化交付</span>
+                            <span style="color: var(--emerald);">OUTPUT</span>
+                        </div>
+                        <div class="s-box" id="case-output">【强制数值推演】
+1. 违约金日费率 0.05% 达到 20% 上限：需连续违约 400 天才触顶（约束力过弱）
+2. 责任限制 10% 穿透：乙方最大赔偿仅 15 万元，架空救济
+
+【逐条审查与红线修改】
+- 第 3.1 条 [RED]：定制开发出资人未获源码所有权。修改为：“技术成果、源代码及算法模型独家归属甲方。”
+- 第 4.2 条 [RED]：10% 责任上限极度不对等。修改为：“赔偿上限为合同总额，排除故意、泄密与知识产权侵权。”
+
+【商业落地七问】
+- 决策结论：有条件可以签约（按修改版）
+- 升级触发：对方拒绝修改源码权属与责任上限
+- 谁审批：技术分管 VP、采购负责人、法务负责人</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 14 大业务模块矩阵 -->
+        <section id="modules">
+            <div class="section-header">
+                <span class="section-tag">Modules</span>
+                <h2 class="section-title">14 个业务领域实操工作流矩阵</h2>
+                <p class="section-desc">统一七段式架构，覆盖企业法务全生命周期核心与次要业务场景</p>
+            </div>
+
+            <div class="modules-grid">
+                <div class="module-item">
+                    <div class="module-type">Core 核心</div>
+                    <div class="module-name">contract-review 合同审查</div>
+                    <div class="module-desc">跨条款数值推演、400天触顶时间陷阱、8列审查表与可直接复制的替换条款。</div>
+                </div>
+                <div class="module-item">
+                    <div class="module-type">Core 核心</div>
+                    <div class="module-name">trade-secret 商业秘密</div>
+                    <div class="module-desc">秘密性/保密措施三要件举证责任核验、24h/3d 紧急时限敏感公证存证。</div>
+                </div>
+                <div class="module-item">
+                    <div class="module-type">Core 核心</div>
+                    <div class="module-name">labor 劳动用工合规</div>
+                    <div class="module-desc">规章制度民主与公示双重核验、法定培训调岗前置程序、2N 赔偿精准量化。</div>
+                </div>
+                <div class="module-item">
+                    <div class="module-type">Core 核心</div>
+                    <div class="module-name">competition 不正当竞争</div>
+                    <div class="module-desc">七类不正当竞争主动筛查、商业诋毁事实定性分离、多元救济途径。</div>
+                </div>
+                <div class="module-item">
+                    <div class="module-type">Core 核心</div>
+                    <div class="module-name">ip 知识产权</div>
+                    <div class="module-desc">权属独立核验（严禁将出资方直接等同著作权人）、全面覆盖侵权比对。</div>
+                </div>
+                <div class="module-item">
+                    <div class="module-type">Core 核心</div>
+                    <div class="module-name">dispute 诉讼与仲裁</div>
+                    <div class="module-desc">3年诉讼时效中断排查、管辖有效性、财产保全与执行可行性前置评估。</div>
+                </div>
+                <div class="module-item">
+                    <div class="module-type">Secondary 次要</div>
+                    <div class="module-name">corporate 公司治理</div>
+                    <div class="module-desc">章程自治优先、新公司法 5 年认缴出资限期与 3 年过渡期减资实缴策略。</div>
+                </div>
+                <div class="module-item">
+                    <div class="module-type">Secondary 次要</div>
+                    <div class="module-name">data-privacy 数据与出境</div>
+                    <div class="module-desc">单独同意法定场景核验、数据出境三条合规路径（申报/认证/标准合同）。</div>
+                </div>
+                <div class="module-item">
+                    <div class="module-type">Secondary 次要</div>
+                    <div class="module-name">compliance 监管准入</div>
+                    <div class="module-desc">违法禁止 vs 监管审慎严格区分、牌照资质前置、广告极限词合规。</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 评测基线对照 -->
+        <section id="evals">
+            <div class="section-header">
+                <span class="section-tag">Evaluation</span>
+                <h2 class="section-title">14 个基准评测用例与三档对照</h2>
+                <p class="section-desc">基于双层 Rubric（Layer 1 一票否决闸门 + Layer 2 评分）的严格离线跑测</p>
+            </div>
+
+            <div class="comparison-table-wrap">
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th>对比档位</th>
+                            <th>配置说明</th>
+                            <th>Layer 1 闸门通过率</th>
+                            <th>M2 虚拟案号违规率</th>
+                            <th>Layer 2 综合均分</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Baseline-0</strong></td>
+                            <td>裸模型直接提问</td>
+                            <td class="col-bad">20.0%</td>
+                            <td class="col-bad">60.0% (高频幻觉)</td>
+                            <td>42.5 分</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Baseline-1</strong></td>
+                            <td>资深中国律师单体 Prompt (400字)</td>
+                            <td>50.0%</td>
+                            <td>40.0%</td>
+                            <td>64.0 分</td>
+                        </tr>
+                        <tr style="background: rgba(56, 189, 248, 0.05);">
+                            <td><strong style="color: var(--primary);">China Legal OS</strong></td>
+                            <td>完整流水线 + 四道 Gate + 12 个 Schema</td>
+                            <td class="col-good"><strong>100.0%</strong> (14/14)</td>
+                            <td class="col-good"><strong>0.0% (绝对禁令)</strong></td>
+                            <td class="col-good"><strong>88.0 分</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 快速安装与配置 -->
+        <section id="install">
+            <div class="install-box">
+                <span class="section-tag">Get Started</span>
+                <h2 class="section-title">一键安装至各大 AI 智能体生态</h2>
+                <p class="section-desc">支持 Claude Code、Codex、Antigravity (Gemini) 与本地命令行 CLI 极速就绪</p>
+                
+                <div class="code-copy-bar">
+                    <span>git clone https://github.com/245678000000/china-legal-os.git && cd china-legal-os && ./scripts/install.sh</span>
+                    <button class="btn-copy" onclick="copyInstallCmd(this)">复制命令</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>China Legal OS · 面向中国大陆企业法务的模块化 AI 工作系统 ｜ 采用 <a href="https://github.com/245678000000/china-legal-os/blob/main/LICENSE" target="_blank">MIT 开源许可证</a></p>
+            <p style="margin-top: 8px; font-size: 12px;">法域：中华人民共和国大陆地区（不含港澳台及涉外法域） ｜ 本系统生成内容供企业内部工作参考，不替代执业律师法律意见</p>
+        </div>
+    </footer>
+
+    <script>
+        const cases = [
+            {
+                input: `大数据技术服务采购协议（标的 150 万元）\n甲方：北京知远数据科技有限公司（采购方）\n乙方：华东云智信息系统有限公司（服务方）\n\n第三条 知识产权归属\n3.1 乙方在履行过程中形成的所有源代码、模型所有权独家归属于乙方。\n3.2 甲方仅享有普通使用许可。\n\n第四条 违约金与责任限制\n4.1 迟延违约金：日万分之五，累计上限 20%。\n4.2 责任上限：乙方承担的全部赔偿总额不得超过已付金额的 10%。`,
+                output: `【强制数值推演】\n1. 违约金日费率 0.05% 达到 20% 上限：需连续违约 400 天才触顶（约束力过弱）\n2. 责任限制 10% 穿透：乙方最大赔偿仅 15 万元，架空救济\n\n【逐条审查与红线修改】\n- 第 3.1 条 [RED]：定制开发出资人未获源码所有权。修改为：“技术成果、源代码及算法模型独家归属甲方。”\n- 第 4.2 条 [RED]：10% 责任上限极度不对等。修改为：“赔偿上限为合同总额，排除故意、泄密与知识产权侵权。”\n\n【商业落地七问】\n- 决策结论：有条件可以签约（按修改版）\n- 升级触发：对方拒绝修改源码权属与责任上限\n- 谁审批：技术分管 VP、采购负责人、法务负责人`
+            },
+            {
+                input: `咨询场景：\n前感知算法负责人李某上月离职入职竞对。今天 IT 安全审计发现其在离职前两周从服务器批量下载了核心未公开算法代码与训练数据集（80GB）。李某签过保密协议与离职承诺书。请问如何维权？`,
+                output: `【路由与证据分级】\n- 路由：Primary: trade-secret, Secondary: [labor, competition], Lane: C (重大事项)\n- 现有证据：下载日志确凿 (Confirmed)；新雇主实际使用 (薄弱 Alleged)\n\n【24h 紧急取证动作】\n- 🚨 P0 今日18:00前：封存办公电脑做 Hash 校验，下载日志做公证保全\n- ⚠️ P1 3日内：对新雇主官网与产品功能做网页公证\n- ⚠️ P2 7日内：寄送法律告知函，阻断新雇主善意抗辩\n\n【商业七问与刑民交叉】\n- 策略：以打促和、固定证据先行、损失达30万启动经侦控告`
+            },
+            {
+                input: `咨询场景：\n公司市场主管张某入职满 3 年，月薪 1.5 万元。Q3 绩效考核为 D（不合格）。部门总监要求依据《员工手册》第 4.2 条（单季度考核不合格可开除且不予补偿）今天立即辞退且不给补偿。请问是否可行？`,
+                output: `【核心法律分析】\n1. 《员工手册》条款违法无效：排除了劳动者法定权利\n2. 程序违法：未经过法定“培训”或“调整工作岗位”前置程序\n\n【经济后果精准量化】\n- 违法解除 (2N)：2 × 3个月 × 15,000元 = 90,000 元 (高败诉风险)\n- 法定不胜任解除 (N+1)：(3 + 1) × 15,000元 = 60,000 元\n- 协商一致解除 (N)：3 × 15,000元 = 45,000 元 (推荐方案)\n\n【今日动作】\n立即叫停单方辞退通知下发，启动 HR 协商解除面谈并签署结清协议`
+            },
+            {
+                input: `咨询场景 (Lane A 极速咨询)：\n我们和供应商签了一份采购合同，双方都在尾页盖了公章，但是盖章处都没有写签署日期，正文里也没写生效日期。请问这份合同生效了吗？`,
+                output: `**结论：合同已经依法成立并生效。**\n\n依据《中华人民共和国民法典》第 490 条〔条号未核验〕之规则内容，当事人采用合同书形式订立合同的，自当事人均签名、盖章或者按指印时合同成立；依法成立的合同，自成立时生效。双方均已加盖真实公章，即使未记载具体日期，不影响合同效力。\n\n> ⚠️ 注意事项 (Caveat)：\n> 若发生争议，具体生效时间需通过邮件、快递底单或交付凭证举证，建议后续签署书面补充协议确认。`
+            }
+        ];
+
+        function switchCase(idx) {
+            document.querySelectorAll('.s-tab').forEach((t, i) => {
+                if (i === idx) t.classList.add('active');
+                else t.classList.remove('active');
+            });
+            document.getElementById('case-input').textContent = cases[idx].input;
+            document.getElementById('case-output').textContent = cases[idx].output;
+        }
+
+        function copyInstallCmd(btn) {
+            const cmd = "git clone https://github.com/245678000000/china-legal-os.git && cd china-legal-os && ./scripts/install.sh";
+            navigator.clipboard.writeText(cmd).then(() => {
+                const oldText = btn.textContent;
+                btn.textContent = "已复制 ✓";
+                setTimeout(() => { btn.textContent = oldText; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -181,14 +181,43 @@ class ChinaLegalOS:
 
 def main():
     parser = argparse.ArgumentParser(description="China Legal OS — 本地法务推理与决策命令行工作台")
-    parser.add_argument("command", nargs="?", default="interactive", choices=["review", "ask", "eval", "doctor", "interactive"], help="执行命令")
+    parser.add_argument("command", nargs="?", default="interactive", choices=["review", "ask", "eval", "doctor", "web", "interactive"], help="执行命令")
     parser.add_argument("-t", "--task", type=str, help="咨询任务描述")
     parser.add_argument("-f", "--file", type=str, help="附件合同或证据文本路径")
     parser.add_argument("-o", "--output", type=str, help="交付物输出保存路径 (.md)")
     parser.add_argument("--html", type=str, help="导出高保真 HTML 报表路径 (.html)")
+    parser.add_argument("-p", "--port", type=int, default=8080, help="Web 预览服务端口号 (默认: 8080)")
     
     args = parser.parse_args()
     os_engine = ChinaLegalOS()
+    
+    if args.command == "web":
+        import http.server
+        import socketserver
+        import webbrowser
+        import threading
+        
+        web_dir = os_engine.root / "docs"
+        port = args.port
+        
+        class CustomHandler(http.server.SimpleHTTPRequestHandler):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, directory=str(web_dir), **kwargs)
+                
+        print("=" * 70)
+        print(f"  China Legal OS — 产品落地页本地预览服务启动中")
+        print(f"  本地预览地址: http://localhost:{port}")
+        print(f"  按 Ctrl+C 可停止预览服务")
+        print("=" * 70)
+        
+        try:
+            with socketserver.TCPServer(("", port), CustomHandler) as httpd:
+                print(f"[+] Web 服务已就绪，正在打开浏览器: http://localhost:{port}")
+                threading.Timer(0.8, lambda: webbrowser.open(f"http://localhost:{port}")).start()
+                httpd.serve_forever()
+        except KeyboardInterrupt:
+            print("\n[!] Web 服务已停止。")
+        return
     
     if args.command == "doctor":
         # 运行全系统健康体检
