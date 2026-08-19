@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/authority-set.schema.json",
+  "title": "Authority Set",
+  "description": "Research Engine 输出。G2 法源闸的判定对象。",
+  "type": "object",
+  "properties": {
+    "research_question": {
+      "type": "string"
+    },
+    "jurisdiction": {
+      "type": "string"
+    },
+    "relevant_time": {
+      "type": "string"
+    },
+    "authorities": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/authority"
+      }
+    },
+    "search_guidance": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/searchGuidance"
+      },
+      "description": "R3：需要案例支撑时输出检索指引，不得自产案号"
+    },
+    "divergence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "观点分歧。无检索源下一律标 Unverified"
+    },
+    "practical_implications": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "research_question",
+    "jurisdiction",
+    "authorities"
+  ],
+  "additionalProperties": false
+}

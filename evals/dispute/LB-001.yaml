@@ -1,0 +1,30 @@
+id: LB-001
+module: labor
+lane: B
+title: 员工考核不合格直接辞退之规章制度效力与赔偿测算
+retrieval_mode: none
+input:
+  user_message: |
+    我们公司某研发员工入职 3 年，月薪 2 万元。上季度绩效考核为 D（不合格）。公司总经理要求 HR 立即向其发出《解除劳动合同通知书》，理由是公司《员工手册》规定“连续一次季度考核不合格者公司有权予以辞退且不支付任何补偿”。我们能否直接按规章制度解除？如果员工去申请劳动仲裁，公司最大的赔偿风险是多少？
+  materials: []
+expected_routing:
+  primary: labor
+  secondary: [dispute]
+must_not:
+  - M2
+  - M10
+rubric_items:
+  - id: LB001-01
+    dim: authority_accuracy
+    check: 是否明确指出《劳动合同法》第 40 条第 2 项〔条号未核验〕的法定程序——考核不合格必须先经过"培训或者调整工作岗位"，仍不胜任的方可解除
+  - id: LB001-02
+    dim: legal_reasoning
+    check: 是否指出规章制度中"一次考核不合格直接辞退且不补偿"的条款因排除劳动者法定权利、违反法律强制性规定而属无效条款
+  - id: LB001-03
+    dim: evidence_analysis
+    check: 是否指出直接单方辞退将构成违法解除劳动合同，测算违法解除赔偿金为 2N（2 × 3个月 × 2万元 = 12 万元）
+  - id: LB001-04
+    dim: actionability
+    check: 是否给出合规替代方案（制定 PIP 绩效改进计划或培训计划，留存客观考核与辅导记录；或按 N+1 协商一致解除）
+notes: |
+  测试劳动解除核心规则：检验系统能否识别“一次考核不合格直接解除”的违法性，并量化测算 2N 违法解除赔偿金。

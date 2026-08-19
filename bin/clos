@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# China Legal OS — 统一命令行启动入口
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PYTHONPATH="$SCRIPT_DIR:$SCRIPT_DIR/evals/runner" python3 "$SCRIPT_DIR/scripts/clos_engine.py" "$@"

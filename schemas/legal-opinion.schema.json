@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/legal-opinion.schema.json",
+  "title": "Legal Opinion",
+  "description": "正式法律意见。假设与限制条件必须显式。",
+  "type": "object",
+  "properties": {
+    "review_basis": {
+      "$ref": "_common.schema.json#/$defs/reviewBasis"
+    },
+    "addressee": {
+      "type": "string"
+    },
+    "matter": {
+      "type": "string"
+    },
+    "documents_reviewed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "qualifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "限制条件。无检索源下必须包含依据未经核验的声明"
+    },
+    "opinions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "type": "string"
+          },
+          "basis": {
+            "type": "array",
+            "items": {
+              "$ref": "_common.schema.json#/$defs/authority"
+            }
+          },
+          "certainty": {
+            "enum": [
+              "Confirmed",
+              "Probable",
+              "Conditional",
+              "Unverified",
+              "Unknown"
+            ]
+          }
+        },
+        "required": [
+          "statement",
+          "basis",
+          "certainty"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "escalation": {
+      "$ref": "_common.schema.json#/$defs/escalation"
+    },
+    "verification_worklist": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/verificationItem"
+      },
+      "description": "RETRIEVAL_MODE=none 下 Lane B/C 强制。见 SPECIFICATION §5.3"
+    }
+  },
+  "required": [
+    "review_basis",
+    "addressee",
+    "matter",
+    "documents_reviewed",
+    "assumptions",
+    "qualifications",
+    "opinions"
+  ],
+  "additionalProperties": false
+}

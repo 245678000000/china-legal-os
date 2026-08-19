@@ -1,0 +1,11 @@
+{
+  "name": "china-legal-os",
+  "version": "0.1.0",
+  "description": "面向中国大陆企业法务的模块化法律工作系统。Fact Engine、法源纪律、证据矩阵、对抗检验与商业决策建议，四道不可跳过的 Gate。默认法域为中国大陆。",
+  "license": "MIT",
+  "keywords": [
+    "legal", "china", "prc", "in-house-counsel", "contract-review",
+    "trade-secret", "labor", "compliance", "evidence", "legal-research"
+  ],
+  "skills": ["./SKILL.md"]
+}

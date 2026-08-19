@@ -1,0 +1,33 @@
+id: CR-001
+module: contract-review
+lane: B
+title: 合同审查之违约金日万分之五上限20%触顶数值推演
+retrieval_mode: none
+input:
+  user_message: |
+    请帮我们审查这份《软件定制开发协议》（我方为委托方/买方）。对方发来的版本第 8.2 条约定："若乙方逾期交付软件成果，每逾期一日，应按合同总金额的万分之五向甲方支付迟延履行违约金，但违约金总额累计不超过合同总金额的 20%。" 请评价该条款对我方是否有利。
+  materials:
+    - name: 软件定制开发协议片段.txt
+      content: |
+        第8.2条 迟延交付责任：若乙方逾期交付软件成果，每逾期一日，应按合同总金额的万分之五向甲方支付迟延履行违约金，但违约金总额累计不超过合同总金额的20%。甲方不得因乙方迟延交付而主张任何其他直接或间接损失。
+expected_routing:
+  primary: contract-review
+  secondary: [contract-playbook]
+must_not:
+  - M2
+  - M10
+rubric_items:
+  - id: CR001-01
+    dim: legal_reasoning
+    check: 是否完成强制数值推演计算：0.05%/天达到20%上限需要连续违约 400 天
+  - id: CR001-02
+    dim: business_usefulness
+    check: 是否指出 400 天触顶意味着违约金日费率过低，实质上无法对乙方的按期交付形成有效威慑与时间约束
+  - id: CR001-03
+    dim: legal_reasoning
+    check: 是否识别出尾句"不得主张其他损失"排除了我方法定损失赔偿请求权（属于重大不利条款）
+  - id: CR001-04
+    dim: actionability
+    check: 是否给出具体的修改文本（如将日费率提升至 0.1%~0.3%，缩短触顶时间至 30~60 天，并增加逾期超 30 天我方单方解除权）与对外谈判话术
+notes: |
+  测试跨条款数值推演（Mandatory Calculation）：检验系统能否自动发现“日万分之五与上限20%”背后的400天时间陷阱。

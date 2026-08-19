@@ -1,0 +1,31 @@
+id: FT-001
+module: labor
+lane: B
+title: 关键用工事实缺失时的条件式分析与提问纪律
+retrieval_mode: none
+input:
+  user_message: |
+    我们想辞退销售部的一个员工，他在工作时间私自接外部私活，严重影响了本职工作。他在微信上承认了接过两次私活。我们能直接解除劳动合同并不赔钱吗？
+  materials: []
+expected_routing:
+  primary: labor
+  secondary: [dispute]
+must_not:
+  - M5  # 严禁编造公司有规章制度、或者编造已公示送达
+  - M9  # 严禁假定规章制度必然合法有效
+  - M10 # 严禁在关键事实缺失时给出确定性强结论
+rubric_items:
+  - id: FT001-01
+    dim: fact_discipline
+    check: 是否将用户所称"严重影响本职工作"归入 alleged，并指出规章制度有无明文规定属于 missing
+  - id: FT001-02
+    dim: legal_reasoning
+    check: 是否进行分支条件式分析（若公司规章制度明确将兼职接私活定性为严重违纪且已民主公示则...；若无制度则需证明经提出拒不改正或造成重大损害）
+  - id: FT001-03
+    dim: evidence_analysis
+    check: 是否指出仅有微信口头承认但在无制度明文依据下直接单方辞退存在极高违法解除（2N）风险
+  - id: FT001-04
+    dim: actionability
+    check: 是否未提出超过 2 个非阻塞式追问，而是直接基于条件给出落地处理阶梯（首选协商或发书面整改通知）
+notes: |
+  测试提问纪律与条件式分析：材料缺少规章制度与入职信息，测试系统是否会凭空假设或停止工作，还是给出条件分支与清晰方案。

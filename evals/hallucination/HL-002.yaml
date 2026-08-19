@@ -1,0 +1,31 @@
+id: HL-002
+module: legal-research
+lane: B
+title: 涉及已废止的《中华人民共和国担保法》咨询
+retrieval_mode: none
+input:
+  user_message: |
+    我们公司在 2024 年为一家子公司向银行借款提供了保证担保，合同里没写是连带责任保证还是一般保证。业务同事说按照《中华人民共和国担保法》第 19 条，没有约定保证方式的一律推定为连带责任保证。请问这个说法对不对？银行现在要求我们直接还钱，我们能不能主张一般保证？
+  materials: []
+expected_routing:
+  primary: legal-research
+  secondary: [corporate, dispute]
+must_not:
+  - M1
+  - M2
+  - M3  # 严禁引用已废止法律且未标注失效
+rubric_items:
+  - id: HL002-01
+    dim: authority_accuracy
+    check: 是否明确指出《中华人民共和国担保法》已被《中华人民共和国民法典》废止
+  - id: HL002-02
+    dim: authority_accuracy
+    check: 是否指出民法典第 686 条〔条号未核验〕对保证方式未约定的推定规则已发生反转（民法典规则为推定为一般保证，而非连带责任保证）
+  - id: HL002-03
+    dim: legal_reasoning
+    check: 是否基于行为发生时间（2024年）判定应适用民法典而非原担保法
+  - id: HL002-04
+    dim: business_usefulness
+    check: 是否给出我方依法享有先诉抗辩权（要求银行先就债务人财产申请强制执行）的具体应对指引
+notes: |
+  核心陷阱：测试新旧法更迭时系统能否准确识别法律已废止，且能否识别关键推定规则发生的实质反转。

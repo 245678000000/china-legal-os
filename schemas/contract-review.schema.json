@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/contract-review.schema.json",
+  "title": "Contract Review",
+  "description": "合同审查交付物。Basis 与 Confidence 两列是相对通行做法的补强。",
+  "type": "object",
+  "properties": {
+    "review_basis": {
+      "$ref": "_common.schema.json#/$defs/reviewBasis"
+    },
+    "deal_identification": {
+      "type": "object",
+      "properties": {
+        "our_role": {
+          "type": "string"
+        },
+        "counterparty": {
+          "type": "string"
+        },
+        "contract_type": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "commercial_terms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "our_role",
+        "contract_type"
+      ],
+      "additionalProperties": false
+    },
+    "cross_clause_interactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clauses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interaction": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "clauses",
+          "interaction"
+        ],
+        "additionalProperties": false
+      },
+      "description": "赔偿 ↔ 责任限制 ↔ 终止 ↔ IP ↔ 保证"
+    },
+    "numeric_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "check": {
+            "enum": [
+              "赔偿上限可达性",
+              "时序可行性",
+              "时间闭合性",
+              "除外情形吞噬上限",
+              "其他"
+            ]
+          },
+          "calculation": {
+            "type": "string"
+          },
+          "finding": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "check",
+          "calculation",
+          "finding"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "description": "强制计算项。例：日万分之五 × 上限20% ⇒ 需连续违约400天才触顶"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clause": {
+            "type": "string"
+          },
+          "quoted_text": {
+            "type": "string",
+            "description": "合同原文。不得改写"
+          },
+          "risk": {
+            "enum": [
+              "BLACK",
+              "Critical",
+              "High",
+              "Medium",
+              "Low"
+            ]
+          },
+          "basis": {
+            "enum": [
+              "合同原文",
+              "Playbook",
+              "法律强制性规定",
+              "商业惯例"
+            ],
+            "description": "四种依据的可反驳性完全不同"
+          },
+          "why": {
+            "type": "string"
+          },
+          "suggested_revision": {
+            "type": "string",
+            "description": "可直接插入的中文条款文本"
+          },
+          "rationale_for_counterparty": {
+            "type": "string",
+            "description": "可对外发送的理由"
+          },
+          "fallback": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priority": {
+            "enum": [
+              "Must-have",
+              "Should-have",
+              "Nice-to-have"
+            ]
+          },
+          "escalation": {
+            "$ref": "_common.schema.json#/$defs/escalation"
+          },
+          "confidence": {
+            "enum": [
+              "Confirmed",
+              "Probable",
+              "Conditional",
+              "Unverified",
+              "Unknown"
+            ]
+          },
+          "authorities": {
+            "type": "array",
+            "items": {
+              "$ref": "_common.schema.json#/$defs/authority"
+            }
+          }
+        },
+        "required": [
+          "clause",
+          "quoted_text",
+          "risk",
+          "basis",
+          "why",
+          "priority",
+          "escalation",
+          "confidence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "missing_clauses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "governing_law_found": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "合同未约定时必须为 null。不得推定或编造"
+    },
+    "dispute_resolution_found": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "negotiation_strategy": {
+      "type": "object",
+      "properties": {
+        "tier1_must_have": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tier2_should_have": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tier3_concession": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "approach": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tier1_must_have",
+        "approach"
+      ],
+      "additionalProperties": false
+    },
+    "red_team": {
+      "$ref": "_common.schema.json#/$defs/redTeam"
+    },
+    "business_decision": {
+      "$ref": "_common.schema.json#/$defs/businessDecision"
+    },
+    "verification_worklist": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/verificationItem"
+      },
+      "description": "RETRIEVAL_MODE=none 下 Lane B/C 强制。见 SPECIFICATION §5.3"
+    }
+  },
+  "required": [
+    "review_basis",
+    "deal_identification",
+    "numeric_checks",
+    "findings",
+    "governing_law_found",
+    "negotiation_strategy"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/risk-matrix.schema.json",
+  "title": "Risk Matrix",
+  "description": "多风险点并列。五档 + 三修饰符，不输出分数。",
+  "type": "object",
+  "properties": {
+    "review_basis": {
+      "$ref": "_common.schema.json#/$defs/reviewBasis"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "scope_covered": {
+      "type": "string"
+    },
+    "scope_not_covered": {
+      "type": "string",
+      "description": "未覆盖范围必须显式。不得以'未发现问题'表述未调查的部分"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "issue": {
+            "type": "string"
+          },
+          "assessment": {
+            "$ref": "_common.schema.json#/$defs/riskAssessment"
+          },
+          "authorities": {
+            "type": "array",
+            "items": {
+              "$ref": "_common.schema.json#/$defs/authority"
+            }
+          },
+          "mitigation": {
+            "type": "string"
+          },
+          "escalation": {
+            "$ref": "_common.schema.json#/$defs/escalation"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "deadline": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "issue",
+          "assessment",
+          "mitigation",
+          "escalation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "verification_worklist": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/verificationItem"
+      },
+      "description": "RETRIEVAL_MODE=none 下 Lane B/C 强制。见 SPECIFICATION §5.3"
+    }
+  },
+  "required": [
+    "review_basis",
+    "subject",
+    "scope_covered",
+    "scope_not_covered",
+    "items"
+  ],
+  "additionalProperties": false
+}

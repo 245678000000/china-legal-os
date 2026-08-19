@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/legal-memo.schema.json",
+  "title": "Legal Research Memo",
+  "description": "法律研究备忘录。禁止只返回搜索结果列表或法条名清单。",
+  "type": "object",
+  "properties": {
+    "review_basis": {
+      "$ref": "_common.schema.json#/$defs/reviewBasis"
+    },
+    "question": {
+      "type": "string"
+    },
+    "short_answer": {
+      "type": "string",
+      "description": "先给结论，再展开"
+    },
+    "certainty": {
+      "enum": [
+        "Confirmed",
+        "Probable",
+        "Conditional",
+        "Unverified",
+        "Unknown"
+      ]
+    },
+    "certainty_driver": {
+      "type": "string",
+      "description": "四元 min 规则中是哪一项封顶了确定性"
+    },
+    "authorities": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/authority"
+      }
+    },
+    "search_guidance": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/searchGuidance"
+      }
+    },
+    "analysis": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "issue": {
+            "type": "string"
+          },
+          "rule": {
+            "type": "string"
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "$ref": "_common.schema.json#/$defs/element"
+            }
+          },
+          "application": {
+            "type": "string"
+          },
+          "counterarguments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "conclusion": {
+            "type": "string"
+          },
+          "conclusion_certainty": {
+            "enum": [
+              "Confirmed",
+              "Probable",
+              "Conditional",
+              "Unverified",
+              "Unknown"
+            ]
+          }
+        },
+        "required": [
+          "issue",
+          "rule",
+          "application",
+          "conclusion",
+          "conclusion_certainty"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "practical_implications": {
+      "type": "string"
+    },
+    "red_team": {
+      "$ref": "_common.schema.json#/$defs/redTeam"
+    },
+    "escalation": {
+      "$ref": "_common.schema.json#/$defs/escalation"
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/action"
+      }
+    },
+    "verification_worklist": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/verificationItem"
+      },
+      "description": "RETRIEVAL_MODE=none 下 Lane B/C 强制。见 SPECIFICATION §5.3"
+    }
+  },
+  "required": [
+    "review_basis",
+    "question",
+    "short_answer",
+    "certainty",
+    "certainty_driver",
+    "authorities",
+    "analysis",
+    "escalation"
+  ],
+  "additionalProperties": false
+}

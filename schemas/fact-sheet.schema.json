@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/fact-sheet.schema.json",
+  "title": "Fact Sheet",
+  "description": "Fact Engine 输出。G1 事实分类闸的判定对象。",
+  "type": "object",
+  "properties": {
+    "our_side": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "counterparty": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "matter_type": {
+      "type": "string"
+    },
+    "relevant_time": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "jurisdiction": {
+      "type": "string",
+      "default": "CN-mainland"
+    },
+    "deal_or_dispute_stage": {
+      "enum": [
+        "未签署",
+        "已签署",
+        "履行中",
+        "已违约",
+        "已起诉",
+        "已裁判",
+        "未知"
+      ]
+    },
+    "commercial_objective": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/fact"
+      }
+    },
+    "user_legal_characterizations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "用户使用的法律定性。一律进入 alleged，不得因用了法律术语就接受"
+    },
+    "missing_critical": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "blocking_question": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "最多一个，且仅限 our_side"
+    }
+  },
+  "required": [
+    "our_side",
+    "matter_type",
+    "jurisdiction",
+    "facts",
+    "missing_critical"
+  ],
+  "additionalProperties": false
+}

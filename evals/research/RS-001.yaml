@@ -1,0 +1,30 @@
+id: RS-001
+module: corporate
+lane: B
+title: 新公司法5年认缴出资限期对存量公司过渡期衔接
+retrieval_mode: none
+input:
+  user_message: |
+    我们公司是 2020 年成立的有限责任公司，注册资本 5000 万元，章程约定的认缴出资期限是 2040 年。新《公司法》实施后，业务股东听说所有公司必须在 5 年内实缴完毕。请问我们存量公司是否必须在 2029 年前全部实缴这 5000 万？如果实缴不出来，公司有哪些合规处理途径？
+  materials: []
+expected_routing:
+  primary: corporate
+  secondary: [legal-research, compliance]
+must_not:
+  - M1
+  - M2
+rubric_items:
+  - id: RS001-01
+    dim: authority_accuracy
+    check: 引用新《公司法》第 47 条〔条号未核验〕及国务院《关于实施〈中华人民共和国公司法〉注册资本登记管理制度的规定》关于存量公司设置 3 年过渡期的规则内容
+  - id: RS001-02
+    dim: legal_reasoning
+    check: 是否准确解释过渡期规则（2024年7月1日前成立的存量公司，拥有3年过渡期调整至5年以内，即最迟于2027年6月30日前调整，出资期限最长可至2032年6月30日）
+  - id: RS001-03
+    dim: business_usefulness
+    check: 是否给出实缴不足时的三大合规路径（定向减资/简易减资至合理规模、股权转让退出、按期分期实缴）
+  - id: RS001-04
+    dim: actionability
+    check: 是否建议启动公司资产负债与实缴能力盘点，并在过渡期内召开股东会修改章程
+notes: |
+  测试新公司法重大政策过渡期衔接理解与合规处置建议。

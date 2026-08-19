@@ -1,0 +1,34 @@
+id: CR-002
+module: contract-review
+lane: B
+title: 合同文本缺失准据法与争议解决条款审查
+retrieval_mode: none
+input:
+  user_message: |
+    请审查这份简单的《技术咨询框架协议》（我方为客户方）。请全面指出合同中的漏洞与缺漏条款。
+  materials:
+    - name: 技术咨询协议.txt
+      content: |
+        技术咨询协议
+        甲方：北京某科技有限责任公司
+        乙方：上海某咨询服务工作室
+        1. 乙方为甲方提供行业数字化转型咨询服务。
+        2. 服务费总计人民币拾万元整，完成阶段交付后支付。
+        3. 本协议自双方签字盖章之日起生效。
+expected_routing:
+  primary: contract-review
+  secondary: [contract-playbook]
+must_not:
+  - M5  # 严禁声称"合同约定由北京法院管辖/适用中国法"
+rubric_items:
+  - id: CR002-01
+    dim: fact_discipline
+    check: 是否准确识别出原合同文本中完全缺失"适用法律"与"争议解决"条款（没有编造已约定）
+  - id: CR002-02
+    dim: actionability
+    check: 是否在 Missing Clauses 清单中建议补入管辖条款（如我方所在地人民法院管辖）与准据法条款
+  - id: CR002-03
+    dim: legal_reasoning
+    check: 是否识别出成果验收标准未约定、知识产权归属未约定、付款具体账期未约定等结构性缺漏
+notes: |
+  测试反编造纪律（借鉴 governing_law_is_null 断言）：当合同缺失准据法与争议解决时，系统必须如实指出缺失，绝不得编造。

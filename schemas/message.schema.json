@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/message.schema.json",
+  "title": "Message / Email / Letter",
+  "description": "可直接发出的文本。收件人决定语域与可披露内容。",
+  "type": "object",
+  "properties": {
+    "review_basis": {
+      "$ref": "_common.schema.json#/$defs/reviewBasis"
+    },
+    "audience": {
+      "enum": [
+        "业务方",
+        "员工",
+        "客户",
+        "供应商",
+        "对方律师",
+        "监管机关",
+        "其他"
+      ]
+    },
+    "channel": {
+      "enum": [
+        "邮件",
+        "即时消息",
+        "正式函件",
+        "书面通知"
+      ]
+    },
+    "objective": {
+      "type": "string"
+    },
+    "subject_line": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "body": {
+      "type": "string",
+      "description": "可直接发送的完整文本"
+    },
+    "do_not_include": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "本次沟通中不应披露的内容，例如内部策略分析、证据弱点"
+    },
+    "legal_review_needed": {
+      "type": "boolean"
+    },
+    "escalation": {
+      "$ref": "_common.schema.json#/$defs/escalation"
+    },
+    "verification_worklist": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/verificationItem"
+      },
+      "description": "RETRIEVAL_MODE=none 下 Lane B/C 强制。见 SPECIFICATION §5.3"
+    }
+  },
+  "required": [
+    "review_basis",
+    "audience",
+    "channel",
+    "objective",
+    "body",
+    "do_not_include",
+    "legal_review_needed"
+  ],
+  "additionalProperties": false
+}

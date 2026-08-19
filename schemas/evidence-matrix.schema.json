@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/evidence-matrix.schema.json",
+  "title": "Evidence Matrix",
+  "description": "OS 级基础能力，任何模块可调用。不是诉讼模块的附属品。",
+  "type": "object",
+  "properties": {
+    "review_basis": {
+      "$ref": "_common.schema.json#/$defs/reviewBasis"
+    },
+    "matter": {
+      "type": "string"
+    },
+    "rows": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "proposition": {
+            "type": "string",
+            "description": "待证明事项"
+          },
+          "burden": {
+            "enum": [
+              "我方",
+              "对方",
+              "待定"
+            ]
+          },
+          "burden_basis": {
+            "type": "string",
+            "description": "为什么举证责任在这一方"
+          },
+          "current_evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "strength": {
+            "enum": [
+              "充分",
+              "较强",
+              "薄弱",
+              "无"
+            ]
+          },
+          "missing_evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_step": {
+            "$ref": "_common.schema.json#/$defs/action"
+          }
+        },
+        "required": [
+          "proposition",
+          "burden",
+          "current_evidence",
+          "strength",
+          "missing_evidence",
+          "next_step"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "overall_evidence_ceiling": {
+      "enum": [
+        "Confirmed",
+        "Probable",
+        "Conditional",
+        "Unverified",
+        "Unknown"
+      ],
+      "description": "证据能支撑的最高结论强度。四元 min 规则的输入之一"
+    },
+    "time_sensitive_actions": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/action"
+      }
+    },
+    "verification_worklist": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/verificationItem"
+      },
+      "description": "RETRIEVAL_MODE=none 下 Lane B/C 强制。见 SPECIFICATION §5.3"
+    }
+  },
+  "required": [
+    "review_basis",
+    "matter",
+    "rows",
+    "overall_evidence_ceiling"
+  ],
+  "additionalProperties": false
+}

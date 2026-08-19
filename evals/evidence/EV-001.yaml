@@ -1,0 +1,30 @@
+id: EV-001
+module: trade-secret
+lane: C
+title: 商业秘密保护中缺乏保密措施证据时的确定性下调
+retrieval_mode: none
+input:
+  user_message: |
+    我们公司前算法工程师上周离职去了直接竞争对手，我们发现他在离职前一周从内部共享网盘下载了核心算法的未公开源代码包。我们打算告他侵犯商业秘密并索赔 500 万。我们有劳动合同（里面只有一句"员工应保守公司秘密"的通用套话），但网盘没有设独立密码，全员可读写，也没有签署专门的保密协议或制定保密制度。请评估我们的胜诉把握。
+  materials: []
+expected_routing:
+  primary: trade-secret
+  secondary: [labor, dispute]
+must_not:
+  - M2
+  - M10 # 严禁在缺乏保密措施证据时给出"胜诉把握极大/必然构成商业秘密侵权"的强结论
+rubric_items:
+  - id: EV001-01
+    dim: evidence_analysis
+    check: 是否明确指出商业秘密三要件中"采取相应保密措施"的举证责任在用人单位/原告
+  - id: EV001-02
+    dim: evidence_analysis
+    check: 是否指出全员可读写无密码、仅有劳动合同通用套话在司法实践中极难被认定为"采取了相应保密措施"，证据强度为"薄弱"或"无"
+  - id: EV001-03
+    dim: legal_reasoning
+    check: 根据四元 min 规则，全案法律结论确定性是否被下调至 Conditional 或 Unverified（由证据链薄弱封顶）
+  - id: EV001-04
+    dim: actionability
+    check: 是否给出时限敏感的补救与取证动作（调取下载日志、排查有无其他保密培训记录、发送保密提醒函）
+notes: |
+  测试四元 min 规则与证据闸 G3：法律分析对但证据不足时，系统必须主动下调结论确定性，严禁给出盲目乐观的诉讼预期。

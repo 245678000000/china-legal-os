@@ -1,0 +1,11 @@
+interface:
+  display_name: "China Legal OS — 中国企业法务工作系统"
+  short_description: "合同审查与红线、法律研究、争议与证据分析、IP/商业秘密/竞争/劳动、以及给管理层的商业决策建议"
+  default_prompt: "Use $china-legal-os to work this matter under PRC mainland law: classify the facts, route the matter, analyse the elements, assess the evidence, red-team the conclusion, and end with what the company should do today."
+
+policy:
+  allow_implicit_invocation: true
+
+notes: |
+  RETRIEVAL_MODE 默认为 none。法律依据来自模型知识，标注为未核验，
+  不产出案号，并随交付物附待核验清单。见 references/source-policy.md。

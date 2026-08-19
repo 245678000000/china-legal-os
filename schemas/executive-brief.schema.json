@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/executive-brief.schema.json",
+  "title": "Executive Brief",
+  "description": "给管理层。Lane C 置顶交付物。目标是决策，不是解释法律。",
+  "type": "object",
+  "properties": {
+    "review_basis": {
+      "$ref": "_common.schema.json#/$defs/reviewBasis"
+    },
+    "the_decision": {
+      "type": "string",
+      "description": "要决定的是什么，一句话"
+    },
+    "recommendation": {
+      "type": "string"
+    },
+    "bottom_line": {
+      "type": "string",
+      "description": "如果只读一段"
+    },
+    "risk": {
+      "$ref": "_common.schema.json#/$defs/riskAssessment"
+    },
+    "if_we_proceed": {
+      "type": "string"
+    },
+    "if_we_dont": {
+      "type": "string"
+    },
+    "business_decision": {
+      "$ref": "_common.schema.json#/$defs/businessDecision"
+    },
+    "what_would_change_this": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "哪些未知一旦查清会改变结论"
+    },
+    "supporting_documents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "verification_worklist": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/verificationItem"
+      },
+      "description": "RETRIEVAL_MODE=none 下 Lane B/C 强制。见 SPECIFICATION §5.3"
+    }
+  },
+  "required": [
+    "review_basis",
+    "the_decision",
+    "recommendation",
+    "bottom_line",
+    "risk",
+    "business_decision",
+    "what_would_change_this"
+  ],
+  "additionalProperties": false
+}

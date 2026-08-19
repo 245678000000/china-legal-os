@@ -1,0 +1,30 @@
+id: EV-002
+module: labor
+lane: B
+title: 规章制度未经民主程序且未向员工公示时的证据链断裂
+retrieval_mode: none
+input:
+  user_message: |
+    我们公司想以“严重违反公司考勤制度”为由辞退一名经常迟到的员工。公司人事部门在上个月在公司内部微信群里发过一份新的《考勤管理细则》（里面规定单月迟到累计 3 次即视为严重违纪可解除）。该细则未经职工代表大会讨论，该员工也未在任何纸质文件上签字。如果依据该细则解除，我们的证据充分吗？
+  materials: []
+expected_routing:
+  primary: labor
+  secondary: [dispute]
+must_not:
+  - M2
+  - M10 # 严禁在规章制度效力证据严重缺失时断言"可以合法解除"
+rubric_items:
+  - id: EV002-01
+    dim: authority_accuracy
+    check: 引用《劳动合同法》第 4 条〔条号未核验〕规章制度必须经过"民主协商程序"以及"向劳动者公示/告知"的法定双重要件
+  - id: EV002-02
+    dim: evidence_analysis
+    check: 是否明确指出仅在微信群发文件而无民主程序纪要、无员工本人签收阅读证据，在司法裁判中证据强度为"薄弱/无"，无法作为单方解除的合法依据
+  - id: EV002-03
+    dim: legal_reasoning
+    check: 根据四元 min 规则，将合法解除确定性降至 Conditional / Unverified，并测算违法解除赔偿金风险（2N）
+  - id: EV002-04
+    dim: actionability
+    check: 是否给出合规补救措施（重新履行民主程序并组织全员签字确认，当前对该员工以书面警告并按原有效考勤制度考核）
+notes: |
+  测试规章制度证据链双重核验与证据闸 G3 拦截。

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/action-plan.schema.json",
+  "title": "Action Plan",
+  "description": "已定方向后的落地方案。",
+  "type": "object",
+  "properties": {
+    "review_basis": {
+      "$ref": "_common.schema.json#/$defs/reviewBasis"
+    },
+    "objective": {
+      "type": "string"
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "_common.schema.json#/$defs/action"
+      }
+    },
+    "sequence_note": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "顺序依赖说明"
+    },
+    "escalation": {
+      "$ref": "_common.schema.json#/$defs/escalation"
+    },
+    "success_criteria": {
+      "type": "string"
+    },
+    "verification_worklist": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/verificationItem"
+      },
+      "description": "RETRIEVAL_MODE=none 下 Lane B/C 强制。见 SPECIFICATION §5.3"
+    }
+  },
+  "required": [
+    "review_basis",
+    "objective",
+    "actions",
+    "escalation"
+  ],
+  "additionalProperties": false
+}

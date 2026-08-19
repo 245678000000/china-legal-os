@@ -1,0 +1,522 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/_common.schema.json",
+  "title": "China Legal OS — 共用定义",
+  "$defs": {
+    "reviewBasis": {
+      "type": "object",
+      "description": "所有 Lane B/C 交付物的强制抬头。缺失即 G4 交付闸 BLOCKED。",
+      "properties": {
+        "retrieval_mode": {
+          "enum": [
+            "none",
+            "web",
+            "database"
+          ],
+          "description": "none 时全部 L2/L3/L4 引用的 verification 恒为 unverified"
+        },
+        "company_context_loaded": {
+          "type": "boolean",
+          "description": "false 时 business_decision 必须标注为通用建议，且不得推断风险偏好或审批链"
+        },
+        "our_side": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "唯一允许阻塞式提问的字段"
+        },
+        "counterparty": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "relevant_time": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "jurisdiction": {
+          "type": "string",
+          "default": "CN-mainland"
+        },
+        "lane": {
+          "enum": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "degradations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "本次交付发生的所有降级，例如 因无检索源，全部法条依据未经核验"
+        }
+      },
+      "required": [
+        "retrieval_mode",
+        "company_context_loaded",
+        "our_side",
+        "lane"
+      ],
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "description": "一条法律依据。规则内容不得为空——只给条号而无规则内容违反 R2。",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "法律/法规/司法解释/监管规则名称"
+        },
+        "level": {
+          "enum": [
+            "L1",
+            "L2",
+            "L3",
+            "L4"
+          ]
+        },
+        "rule_content": {
+          "type": "string",
+          "minLength": 1,
+          "description": "该规则说了什么。R2：条号不得作为唯一支撑"
+        },
+        "article_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "条号。RETRIEVAL_MODE=none 时必须在文本中带〔条号未核验〕并进入 verification_worklist"
+        },
+        "verification": {
+          "enum": [
+            "verified",
+            "unverified",
+            "contradicted"
+          ]
+        },
+        "currency_flag": {
+          "type": "boolean",
+          "description": "true 表示命中 Currency Trigger 五类，结论强度上限为 Conditional"
+        },
+        "supports_issue": {
+          "type": "string"
+        },
+        "source_note": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "L1 材料时写文件名/页/条"
+        }
+      },
+      "required": [
+        "name",
+        "level",
+        "rule_content",
+        "verification",
+        "currency_flag"
+      ],
+      "additionalProperties": false
+    },
+    "searchGuidance": {
+      "type": "object",
+      "description": "R3 案号禁令下替代案例引用的产物。绝不允许自产案号。",
+      "properties": {
+        "objective": {
+          "type": "string",
+          "description": "想找到什么"
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "queries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "would_change": {
+          "type": "string",
+          "description": "找到后会改变哪个结论"
+        }
+      },
+      "required": [
+        "objective",
+        "platforms",
+        "queries",
+        "would_change"
+      ],
+      "additionalProperties": false
+    },
+    "verificationItem": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "条号",
+            "时效",
+            "监管口径",
+            "司法解释",
+            "实践倾向",
+            "主体信息",
+            "其他"
+          ]
+        },
+        "where": {
+          "type": "string",
+          "description": "建议核验入口"
+        },
+        "impact_if_fails": {
+          "type": "string",
+          "description": "关键列：核验不通过对结论的影响，用于排序核验优先级"
+        }
+      },
+      "required": [
+        "item",
+        "type",
+        "where",
+        "impact_if_fails"
+      ],
+      "additionalProperties": false
+    },
+    "fact": {
+      "type": "object",
+      "properties": {
+        "statement": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "confirmed",
+            "alleged",
+            "disputed",
+            "missing",
+            "assumption"
+          ]
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "confirmed 必填：文件名/页/条"
+        },
+        "asserted_by": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "alleged 必填：谁主张的"
+        },
+        "sides": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "disputed 必填：并列两侧，不得静默选边"
+        },
+        "criticality": {
+          "enum": [
+            "critical",
+            "non-critical"
+          ],
+          "description": "missing 必填"
+        },
+        "defeasible_by": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "assumption 必填：什么会推翻它"
+        }
+      },
+      "required": [
+        "statement",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "element": {
+      "type": "object",
+      "description": "Reasoning 输出的不是结论，是要件。每个要件必须有 evidence 评估。",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "rule_basis": {
+          "type": "string"
+        },
+        "facts_applied": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "burden": {
+          "enum": [
+            "我方",
+            "对方",
+            "待定"
+          ]
+        },
+        "evidence_strength": {
+          "enum": [
+            "充分",
+            "较强",
+            "薄弱",
+            "无"
+          ]
+        },
+        "missing_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "satisfied": {
+          "enum": [
+            "是",
+            "否",
+            "存疑"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "rule_basis",
+        "burden",
+        "evidence_strength",
+        "satisfied"
+      ],
+      "additionalProperties": false
+    },
+    "riskAssessment": {
+      "type": "object",
+      "description": "五档 + 三个独立修饰符。不输出 0-100 分数。",
+      "properties": {
+        "level": {
+          "enum": [
+            "BLACK",
+            "Critical",
+            "High",
+            "Medium",
+            "Low"
+          ]
+        },
+        "probability": {
+          "type": "string"
+        },
+        "legal_impact": {
+          "type": "string"
+        },
+        "financial_impact": {
+          "type": "string"
+        },
+        "business_impact": {
+          "type": "string"
+        },
+        "reputation_impact": {
+          "type": "string"
+        },
+        "reversibility": {
+          "enum": [
+            "可逆",
+            "部分可逆",
+            "不可逆"
+          ]
+        },
+        "evidence_strength": {
+          "enum": [
+            "充分",
+            "较强",
+            "薄弱",
+            "无"
+          ]
+        },
+        "legal_certainty": {
+          "enum": [
+            "Confirmed",
+            "Probable",
+            "Conditional",
+            "Unverified",
+            "Unknown"
+          ]
+        }
+      },
+      "required": [
+        "level",
+        "reversibility",
+        "evidence_strength",
+        "legal_certainty"
+      ],
+      "additionalProperties": false
+    },
+    "escalation": {
+      "type": "object",
+      "description": "必答四问。内容为'建议咨询律师'视为未填写。",
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "level": {
+          "enum": [
+            "E1",
+            "E2",
+            "E3",
+            "E4",
+            "E5",
+            "none"
+          ]
+        },
+        "to": {
+          "type": "string",
+          "description": "岗位，不是'律师'"
+        },
+        "trigger": {
+          "type": "string",
+          "description": "可判定的条件"
+        },
+        "materials_needed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deadline": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "required",
+        "level"
+      ],
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "properties": {
+        "what": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "deadline": {
+          "type": "string"
+        },
+        "materials_needed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "time_sensitive": {
+          "type": "boolean",
+          "description": "证据固定/时效/期限类动作必须为 true 并单独置顶"
+        }
+      },
+      "required": [
+        "what",
+        "owner",
+        "deadline"
+      ],
+      "additionalProperties": false
+    },
+    "redTeam": {
+      "type": "object",
+      "description": "High/Critical/BLACK 结论强制。conclusion_should_downgrade 是必答项。",
+      "properties": {
+        "strongest_rebuttal": {
+          "type": "string"
+        },
+        "adverse_facts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_weaknesses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "alternative_interpretation": {
+          "type": "string"
+        },
+        "conclusion_should_downgrade": {
+          "type": "boolean"
+        },
+        "downgrade_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "strongest_rebuttal",
+        "conclusion_should_downgrade"
+      ],
+      "additionalProperties": false
+    },
+    "businessDecision": {
+      "type": "object",
+      "description": "必答七问，缺一不可。",
+      "properties": {
+        "can_we_do_it": {
+          "enum": [
+            "可以",
+            "有条件可以",
+            "不建议",
+            "不能"
+          ]
+        },
+        "lowest_risk_path": {
+          "type": "string"
+        },
+        "if_business_insists": {
+          "type": "string"
+        },
+        "fallback": {
+          "type": "string"
+        },
+        "escalation": {
+          "$ref": "#/$defs/escalation"
+        },
+        "approver": {
+          "type": "string"
+        },
+        "today": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "can_we_do_it",
+        "lowest_risk_path",
+        "if_business_insists",
+        "fallback",
+        "escalation",
+        "approver",
+        "today"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

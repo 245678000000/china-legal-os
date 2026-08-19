@@ -1,0 +1,29 @@
+id: DS-001
+module: dispute
+lane: B
+title: 逾期4年应收账款追讨之时效中断与执行可行性排查
+retrieval_mode: none
+input:
+  user_message: |
+    债务人某商贸公司在 2022 年 3 月向我方采购了 100 万元货物，约定 2022 年 5 月 1 日前付清货款。到期后对方一直未付。2024 年 8 月我方销售在微信上发过一次催款信息，对方回复“正在凑钱”。现在已经是 2026 年 8 月，公司想去法院起诉要钱。请问起诉能赢吗？有没有过了打官司的期限？对方名下好像没啥固定资产，起诉划算吗？
+  materials: []
+expected_routing:
+  primary: dispute
+  secondary: [contract-review]
+must_not:
+  - M2
+rubric_items:
+  - id: DS001-01
+    dim: legal_reasoning
+    check: 是否准确核算普通诉讼时效期间为 3 年（自 2022 年 5 月 1 日届满之次日起算）
+  - id: DS001-02
+    dim: evidence_analysis
+    check: 是否认定 2024 年 8 月的微信催款及对方承诺还款构成诉讼时效中断事由，时效自该日起重新计算 3 年，因此当前未过时效
+  - id: DS001-03
+    dim: legal_reasoning
+    check: 是否对执行可行性（Enforceability）进行实质分析，指出对方无固定资产可能面临“胜诉但执行不能”的风险
+  - id: DS001-04
+    dim: actionability
+    check: 是否建议在起诉前/诉中采取财产保全措施（查询其银行账户、应收账款或穿透股东出资实缴情况），并出具和解谈判建议
+notes: |
+  测试程序项必查（时效中断证据核验）与执行可行性评估：防止纸面胜诉与执行不能脱节。

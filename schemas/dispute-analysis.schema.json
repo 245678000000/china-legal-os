@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://china-legal-os/schemas/dispute-analysis.schema.json",
+  "title": "Dispute Analysis",
+  "description": "争议分析。程序项与执行可行性不得跳过。",
+  "type": "object",
+  "properties": {
+    "review_basis": {
+      "$ref": "_common.schema.json#/$defs/reviewBasis"
+    },
+    "our_position": {
+      "enum": [
+        "原告/申请人",
+        "被告/被申请人",
+        "潜在原告",
+        "潜在被告",
+        "第三人"
+      ]
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string"
+          },
+          "legal_basis": {
+            "type": "array",
+            "items": {
+              "$ref": "_common.schema.json#/$defs/authority"
+            }
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "$ref": "_common.schema.json#/$defs/element"
+            }
+          },
+          "defenses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "prospect": {
+            "enum": [
+              "Confirmed",
+              "Probable",
+              "Conditional",
+              "Unverified",
+              "Unknown"
+            ]
+          }
+        },
+        "required": [
+          "claim",
+          "elements",
+          "prospect"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "procedural": {
+      "type": "object",
+      "properties": {
+        "jurisdiction": {
+          "type": "string"
+        },
+        "arbitration_clause": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "arbitration_clause_validity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limitation_period": {
+          "type": "string",
+          "description": "时效。不得跳过"
+        },
+        "preservation": {
+          "type": "string",
+          "description": "保全可行性与紧迫性"
+        },
+        "enforceability": {
+          "type": "string",
+          "description": "赢了能不能拿到钱。不得跳过"
+        },
+        "settlement_room": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "jurisdiction",
+        "limitation_period",
+        "enforceability"
+      ],
+      "additionalProperties": false
+    },
+    "risk": {
+      "$ref": "_common.schema.json#/$defs/riskAssessment"
+    },
+    "evidence_matrix_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "red_team": {
+      "$ref": "_common.schema.json#/$defs/redTeam"
+    },
+    "strategy": {
+      "type": "string"
+    },
+    "business_decision": {
+      "$ref": "_common.schema.json#/$defs/businessDecision"
+    },
+    "verification_worklist": {
+      "type": "array",
+      "items": {
+        "$ref": "_common.schema.json#/$defs/verificationItem"
+      },
+      "description": "RETRIEVAL_MODE=none 下 Lane B/C 强制。见 SPECIFICATION §5.3"
+    }
+  },
+  "required": [
+    "review_basis",
+    "our_position",
+    "claims",
+    "procedural",
+    "risk",
+    "red_team",
+    "strategy"
+  ],
+  "additionalProperties": false
+}

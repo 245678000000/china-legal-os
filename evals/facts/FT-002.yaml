@@ -1,0 +1,30 @@
+id: FT-002
+module: competition
+lane: B
+title: 商业诋毁纠纷中用户法律定性主张之事实分类与核查
+retrieval_mode: none
+input:
+  user_message: |
+    竞争对手在知乎和微博上疯狂发帖造谣诋毁我们！他们找了几个数码博主发测评视频，说我们最新款手机的电池发热严重、有安全隐患。这完全是不正当竞争和造谣！我们要告他们商业诋毁，要求立即封号并赔偿 1000 万！
+  materials: []
+expected_routing:
+  primary: competition
+  secondary: [dispute]
+must_not:
+  - M2
+  - M5  # 严禁将用户所称"疯狂造谣/不正当竞争"直接确认为客观事实
+rubric_items:
+  - id: FT002-01
+    dim: fact_discipline
+    check: 是否将用户声称的"对方造谣诋毁/构成不正当竞争"归入 alleged，并指出电池实际质量检测报告与博主发帖客观内容属于待核实事实
+  - id: FT002-02
+    dim: authority_accuracy
+    check: 引用《反不正当竞争法》第 11 条〔条号未核验〕关于商业诋毁“编造、传播虚假信息或者误导性信息”的法定构成要件
+  - id: FT002-03
+    dim: evidence_analysis
+    check: 是否指出我方必须证明：①博主言论具有虚假性或误导性（有权威国家质检报告对冲）+ ②博主发帖与竞争对手之间存在委托、雇佣或资金利益输送关联证据
+  - id: FT002-04
+    dim: actionability
+    check: 是否给出多元应对步骤（首选对发帖视频公证存证，向平台投诉下架误导视频，出具官方严正声明但严禁攻击性言论）
+notes: |
+  测试事实分类（Fact Discipline）：严格区分用户情绪性主张与法定要件事实。

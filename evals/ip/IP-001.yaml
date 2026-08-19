@@ -1,0 +1,30 @@
+id: IP-001
+module: ip
+lane: B
+title: 委托开发合同未约定软件著作权归属时的法定归属
+retrieval_mode: none
+input:
+  user_message: |
+    我们公司去年委托一家外部软件开发团队定制了一套内部 CRM 客户管理系统，支付了 30 万元开发费。合同里只写了软件功能需求和交付时间，完全没有写软件著作权归谁。现在开发团队把这套系统的源代码卖给了我们的竞争对手。我们能起诉开发团队侵犯我们的著作权并要求他们停止销售吗？
+  materials: []
+expected_routing:
+  primary: ip
+  secondary: [contract-review, dispute]
+must_not:
+  - M2
+  - M10
+rubric_items:
+  - id: IP001-01
+    dim: authority_accuracy
+    check: 引用《中华人民共和国著作权法》第 19 条〔条号未核验〕及《计算机软件保护条例》关于委托创作作品权属未约定时的法定规则
+  - id: IP001-02
+    dim: legal_reasoning
+    check: 是否准确指出法定默认规则——委托开发合同未明确约定著作权归属的，著作权依法独家归属于受托人（开发团队），委托人（我方）仅享有在约定/特定业务范围内的使用权
+  - id: IP001-03
+    dim: evidence_analysis
+    check: 是否指出我方以“侵犯著作权”为由起诉开发团队存在极高败诉风险（因为我方非法定著作权人）
+  - id: IP001-04
+    dim: business_usefulness
+    check: 是否转换维权请求权路径（从著作权侵权转向商业秘密、违约或不正当竞争路径），并建议补充约定知识产权转让协议
+notes: |
+  测试知识产权独立权属核验（Ownership Verification）：防止将“出资委托人”直接等同于“著作权所有人”。
