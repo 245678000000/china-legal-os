@@ -4,42 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>China Legal OS — 面向中国大陆企业法务的模块化 AI 工作系统</title>
-    <meta name="description" content="中国企业法务的模块化 AI 工作系统。事实分类、法定要件拆解、证据矩阵核验、红队对抗与落地商业决策。">
+    <meta name="description" content="中国大陆企业法务模块化 AI 工作系统。事实分类、法定要件拆解、证据矩阵核验、红队对抗与落地商业决策。">
     
-    <!-- 引入 Google Fonts 高级排版字体 -->
+    <!-- 引入先锋排版字体：Syne (先锋标题), Space Grotesk (几何正文), JetBrains Mono (代码与数据) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- 引入专业矢量图标库 Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
         :root {
-            --bg-void: #030712;
-            --bg-sapphire: #070e22;
-            --bg-card: rgba(13, 21, 41, 0.72);
-            --bg-card-hover: rgba(20, 32, 60, 0.88);
-            --bg-card-inner: #050a17;
+            --bg-void: #03050c;
+            --bg-glass-1: rgba(8, 14, 28, 0.65);
+            --bg-glass-2: rgba(14, 23, 44, 0.75);
+            --bg-pane: #040814;
             
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 255, 255, 0.22);
-            --border-glow-cyan: rgba(56, 189, 248, 0.45);
-            --border-glow-indigo: rgba(99, 102, 241, 0.45);
+            --border-glass: rgba(255, 255, 255, 0.07);
+            --border-glass-bright: rgba(255, 255, 255, 0.18);
+            --border-cyan: rgba(56, 189, 248, 0.4);
+            --border-violet: rgba(168, 85, 247, 0.4);
             
-            --cyan-400: #38bdf8;
-            --cyan-500: #0ea5e9;
-            --indigo-400: #818cf8;
-            --indigo-500: #6366f1;
-            --violet-400: #a78bfa;
-            --emerald-400: #34d399;
-            --amber-400: #fbbf24;
-            --rose-400: #fb7185;
+            --cyan-glow: #38bdf8;
+            --indigo-glow: #6366f1;
+            --violet-glow: #a855f7;
+            --emerald-glow: #34d399;
+            --amber-glow: #fbbf24;
+            --rose-glow: #fb7185;
             
             --text-pure: #ffffff;
             --text-main: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
+            --text-dim: #94a3b8;
+            --text-dark: #64748b;
             
-            --font-main: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            --font-code: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --font-display: "Syne", -apple-system, sans-serif;
+            --font-body: "Space Grotesk", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            --font-code: "JetBrains Mono", monospace;
         }
 
         * {
@@ -48,18 +49,29 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: var(--font-main);
+            font-family: var(--font-body);
             background-color: var(--bg-void);
             color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            selection-background-color: var(--cyan-glow);
+            selection-color: #000;
         }
 
-        /* 宇宙极光与深空背景 */
-        .aurora-bg {
+        ::selection {
+            background: rgba(56, 189, 248, 0.3);
+            color: #fff;
+        }
+
+        /* Canvas 交互物理力场画布 */
+        #interactive-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -67,104 +79,57 @@
             height: 100vh;
             pointer-events: none;
             z-index: 0;
-            overflow: hidden;
-            background: radial-gradient(circle at 50% 0%, #0c1836 0%, #030712 70%);
-        }
-
-        .aurora-glow-1 {
-            position: absolute;
-            top: -15%;
-            left: 15%;
-            width: 850px;
-            height: 650px;
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.18) 0%, rgba(99, 102, 241, 0.1) 45%, transparent 75%);
-            filter: blur(80px);
-            animation: floatGlow1 20s ease-in-out infinite alternate;
-        }
-
-        .aurora-glow-2 {
-            position: absolute;
-            top: 20%;
-            right: 8%;
-            width: 750px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(56, 189, 248, 0.08) 50%, transparent 80%);
-            filter: blur(90px);
-            animation: floatGlow2 24s ease-in-out infinite alternate-reverse;
-        }
-
-        .grid-overlay {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: radial-gradient(ellipse at center 25%, black 45%, transparent 85%);
-            -webkit-mask-image: radial-gradient(ellipse at center 25%, black 45%, transparent 85%);
-        }
-
-        @keyframes floatGlow1 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(70px, 50px) scale(1.12); }
-        }
-
-        @keyframes floatGlow2 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-60px, -40px) scale(1.08); }
         }
 
         .container {
-            max-width: 1240px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 28px;
             position: relative;
             z-index: 1;
         }
 
-        /* 顶部毛玻璃导航 */
+        /* 顶部导航 */
         header {
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            background: rgba(3, 7, 18, 0.78);
-            border-bottom: 1px solid var(--border-subtle);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            background: rgba(3, 5, 12, 0.8);
+            border-bottom: 1px solid var(--border-glass);
         }
 
         .nav-inner {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 72px;
+            height: 76px;
         }
 
-        .logo-group {
+        .logo-wrap {
             display: flex;
             align-items: center;
             gap: 12px;
             text-decoration: none;
         }
 
-        .logo-symbol {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 14px;
             color: #fff;
-            box-shadow: 0 0 24px rgba(14, 165, 233, 0.45);
-            font-family: var(--font-code);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
-        .logo-text {
-            font-size: 19px;
+        .logo-brand {
+            font-family: var(--font-display);
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: -0.5px;
             color: #fff;
@@ -173,852 +138,915 @@
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 32px;
+            gap: 36px;
             list-style: none;
         }
 
         .nav-links a {
-            color: var(--text-secondary);
+            color: var(--text-dim);
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .nav-links a:hover {
-            color: var(--cyan-400);
+            color: var(--cyan-glow);
         }
 
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-main);
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-size: 13px;
+        .nav-cta {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass-bright);
+            color: #fff;
+            padding: 9px 20px;
+            border-radius: 10px;
+            font-size: 13.5px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             align-items: center;
             gap: 8px;
             backdrop-filter: blur(10px);
         }
 
-        .nav-btn:hover {
+        .nav-cta:hover {
             background: rgba(56, 189, 248, 0.15);
-            border-color: var(--cyan-400);
-            color: #fff;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            border-color: var(--cyan-glow);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
+            transform: translateY(-1px);
         }
 
         /* Hero 区域 */
-        .hero-section {
-            padding: 96px 0 76px 0;
+        .hero {
+            padding: 110px 0 80px 0;
             text-align: center;
+            position: relative;
         }
 
-        .pill-badge {
+        .hero-pill {
             display: inline-flex;
             align-items: center;
             gap: 10px;
             padding: 7px 18px;
             border-radius: 9999px;
-            background: rgba(14, 165, 233, 0.1);
+            background: rgba(14, 165, 233, 0.08);
             border: 1px solid rgba(56, 189, 248, 0.3);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
             font-size: 13px;
             font-weight: 600;
-            color: var(--cyan-400);
-            margin-bottom: 30px;
-            box-shadow: 0 0 24px rgba(14, 165, 233, 0.15);
+            color: var(--cyan-glow);
+            margin-bottom: 32px;
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.15);
         }
 
-        .pill-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--cyan-400);
-            box-shadow: 0 0 10px var(--cyan-400);
-            animation: pulseDot 2s infinite;
-        }
-
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.35; transform: scale(0.75); }
-        }
-
-        .hero-headline {
-            font-size: 60px;
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: 64px;
             font-weight: 900;
             letter-spacing: -2px;
-            line-height: 1.12;
-            margin-bottom: 26px;
-            max-width: 980px;
+            line-height: 1.1;
+            margin-bottom: 28px;
+            max-width: 1020px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        .gradient-text {
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 45%, #c084fc 100%);
+        .hero-title .gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 40%, #c084fc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 50px rgba(56, 189, 248, 0.25);
+            text-shadow: 0 0 60px rgba(56, 189, 248, 0.3);
         }
 
-        .hero-subheadline {
-            font-size: 19px;
-            color: var(--text-secondary);
-            max-width: 780px;
-            margin: 0 auto 42px auto;
-            line-height: 1.65;
+        .hero-subtitle {
+            font-size: 19.5px;
+            color: var(--text-dim);
+            max-width: 800px;
+            margin: 0 auto 46px auto;
+            line-height: 1.7;
             font-weight: 400;
         }
 
-        .hero-cta-group {
+        .hero-actions {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 18px;
-            margin-bottom: 74px;
+            gap: 20px;
+            margin-bottom: 84px;
         }
 
-        .btn-glow-primary {
-            background: linear-gradient(135deg, #0284c7, #2563eb);
+        .btn-glow {
+            background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+            color: #fff;
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 0 40px rgba(2, 132, 199, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-glow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(2, 132, 199, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+        }
+
+        .btn-glass {
+            background: rgba(30, 41, 59, 0.45);
             color: #fff;
             padding: 16px 34px;
             border-radius: 12px;
             font-size: 15px;
             font-weight: 600;
             text-decoration: none;
-            box-shadow: 0 0 35px rgba(2, 132, 199, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.25s;
+            border: 1px solid var(--border-glass-bright);
+            backdrop-filter: blur(16px);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             display: inline-flex;
             align-items: center;
             gap: 10px;
         }
 
-        .btn-glow-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 50px rgba(2, 132, 199, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.45);
-        }
-
-        .btn-glass-secondary {
-            background: rgba(30, 41, 59, 0.45);
-            color: var(--text-pure);
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
-            border: 1px solid var(--border-subtle);
-            backdrop-filter: blur(16px);
-            transition: all 0.25s;
-        }
-
-        .btn-glass-secondary:hover {
-            background: rgba(51, 65, 85, 0.7);
-            border-color: rgba(255, 255, 255, 0.28);
-            transform: translateY(-2px);
-        }
-
-        /* 核心指标微光卡片 */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 22px;
-            margin-bottom: 84px;
-        }
-
-        .stat-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 26px;
-            text-align: left;
-            backdrop-filter: blur(20px);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.25s;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-        }
-
-        .stat-item:hover {
-            border-color: var(--border-glow-cyan);
+        .btn-glass:hover {
+            background: rgba(51, 65, 85, 0.75);
+            border-color: rgba(255, 255, 255, 0.35);
             transform: translateY(-3px);
         }
 
-        .stat-item::after {
+        /* 动态横向流光跑马灯 Ticker */
+        .marquee-wrap {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            overflow: hidden;
+            border-top: 1px solid var(--border-glass);
+            border-bottom: 1px solid var(--border-glass);
+            background: rgba(8, 14, 28, 0.4);
+            padding: 16px 0;
+            margin-bottom: 90px;
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 48px;
+            width: max-content;
+            animation: scrollMarquee 30s linear infinite;
+        }
+
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-code);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .marquee-item i {
+            color: var(--cyan-glow);
+        }
+
+        @keyframes scrollMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 核心指标 Bento 卡片 */
+        .stats-bento {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 96px;
+        }
+
+        .stat-box {
+            background: var(--bg-glass-1);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 28px;
+            backdrop-filter: blur(24px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-box:hover {
+            border-color: var(--border-cyan);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(56, 189, 248, 0.15);
+        }
+
+        .stat-box::after {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--cyan-400), transparent);
-            opacity: 0.7;
+            background: linear-gradient(90deg, transparent, var(--cyan-glow), transparent);
         }
 
-        .stat-number {
-            font-size: 36px;
-            font-weight: 800;
+        .stat-val {
             font-family: var(--font-code);
+            font-size: 38px;
+            font-weight: 800;
             color: #fff;
-            letter-spacing: -1px;
-            margin-bottom: 4px;
+            letter-spacing: -1.5px;
+            margin-bottom: 6px;
         }
 
-        .stat-desc {
-            font-size: 13px;
-            color: var(--text-secondary);
+        .stat-title {
+            font-size: 13.5px;
+            color: var(--text-dim);
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* ==========================================================================
-           macOS 企业法务工作台 Mockup (核心交互王牌)
+           Bento 3.0 先锋交互式 macOS 法务工作台
         ========================================================================== */
-        .workspace-mockup {
-            background: #090e1a;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 20px;
+        .workspace-card {
+            background: #080d1a;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 22px;
             overflow: hidden;
-            box-shadow: 0 35px 100px rgba(0, 0, 0, 0.85), 0 0 60px rgba(14, 165, 233, 0.12);
-            margin-bottom: 130px;
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.9), 0 0 70px rgba(14, 165, 233, 0.15);
+            margin-bottom: 140px;
             text-align: left;
             position: relative;
         }
 
-        .mac-window-bar {
-            background: #0d1527;
+        .mac-bar {
+            background: #0d162a;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 14px 20px;
+            padding: 14px 22px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .mac-traffic-lights {
+        .mac-dots {
             display: flex;
             gap: 8px;
         }
 
-        .mac-light {
+        .mac-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
         }
-        .ml-red { background: #ff5f56; }
-        .ml-yellow { background: #ffbd2e; }
-        .ml-green { background: #27c93f; }
+        .md-red { background: #ff5f56; }
+        .md-yellow { background: #ffbd2e; }
+        .md-green { background: #27c93f; }
 
-        .mac-tabs {
+        .mac-tabs-list {
             display: flex;
             gap: 8px;
         }
 
-        .mac-tab-btn {
-            padding: 6px 16px;
+        .mac-tab-trigger {
+            padding: 7px 18px;
             border-radius: 8px;
             font-size: 12.5px;
             font-family: var(--font-code);
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--text-dim);
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
-        .mac-tab-btn:hover {
+        .mac-tab-trigger:hover {
             color: #fff;
             background: rgba(255, 255, 255, 0.08);
         }
 
-        .mac-tab-btn.active {
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--cyan-400);
-            border-color: rgba(56, 189, 248, 0.4);
-            box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+        .mac-tab-trigger.active {
+            background: rgba(56, 189, 248, 0.16);
+            color: var(--cyan-glow);
+            border-color: rgba(56, 189, 248, 0.45);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
         }
 
-        .mac-meta-tag {
-            font-size: 11.5px;
-            color: var(--text-muted);
+        .mac-status-text {
+            font-size: 12px;
+            color: var(--text-dark);
             font-family: var(--font-code);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
-        .mac-body {
+        .mac-grid {
             display: grid;
-            grid-template-columns: 250px 1fr 330px;
-            min-height: 560px;
-            background: var(--bg-card-inner);
-            transition: opacity 0.2s ease-in-out;
+            grid-template-columns: 260px 1fr 340px;
+            min-height: 580px;
+            background: var(--bg-pane);
         }
 
-        .fade-in {
-            animation: fadeIn 0.25s ease-in-out;
+        .fade-transition {
+            animation: fadeInAnim 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0.4; transform: translateY(4px); }
+        @keyframes fadeInAnim {
+            from { opacity: 0.3; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 工作台左侧：事实/要件分类 */
-        .wb-left-pane {
+        /* 工作台左侧：事实分类 */
+        .wb-sidebar {
             border-right: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 20px;
-            background: rgba(13, 21, 41, 0.45);
+            padding: 22px;
+            background: rgba(8, 14, 28, 0.5);
         }
 
-        .wb-pane-title {
+        .wb-label {
             font-size: 11px;
             font-weight: 800;
             font-family: var(--font-code);
-            color: var(--text-muted);
+            color: var(--text-dark);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .fact-tag {
+        .tag-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             padding: 5px 12px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 700;
             margin-bottom: 10px;
             width: 100%;
         }
-        .ft-confirmed { background: rgba(52, 211, 153, 0.12); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
-        .ft-alleged { background: rgba(251, 191, 36, 0.12); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
-        .ft-missing { background: rgba(251, 113, 133, 0.12); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.3); }
+        .tp-green { background: rgba(52, 211, 153, 0.12); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+        .tp-amber { background: rgba(251, 191, 36, 0.12); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .tp-rose { background: rgba(251, 113, 133, 0.12); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.3); }
 
-        .fact-item-text {
+        .tag-detail {
             font-size: 12.5px;
             color: #cbd5e1;
-            margin-bottom: 16px;
-            line-height: 1.55;
+            margin-bottom: 18px;
+            line-height: 1.6;
         }
 
-        /* 工作台中部：核心分析视窗 */
-        .wb-center-pane {
-            padding: 26px;
+        /* 工作台中部：核心代码/红线审查 */
+        .wb-editor {
+            padding: 28px;
             overflow-y: auto;
             border-right: 1px solid rgba(255, 255, 255, 0.06);
             font-family: var(--font-code);
             font-size: 13px;
             color: #94a3b8;
-            line-height: 1.8;
+            line-height: 1.85;
         }
 
-        .contract-line {
+        .code-row {
             padding: 4px 0;
         }
 
-        .highlight-strike {
-            background: rgba(244, 63, 94, 0.18);
+        .str-del {
+            background: rgba(244, 63, 94, 0.2);
             color: #fda4af;
             text-decoration: line-through;
             padding: 2px 8px;
             border-radius: 4px;
         }
 
-        .highlight-insert {
-            background: rgba(52, 211, 153, 0.18);
+        .str-add {
+            background: rgba(52, 211, 153, 0.2);
             color: #6ee7b7;
             padding: 2px 8px;
             border-radius: 4px;
             font-weight: 600;
         }
 
-        .floating-finding-card {
-            background: #171c38;
-            border: 1px solid rgba(129, 140, 248, 0.35);
-            border-radius: 12px;
-            padding: 16px;
-            margin: 16px 0;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
-            font-family: var(--font-main);
+        .finding-box {
+            background: #141b36;
+            border: 1px solid rgba(129, 140, 248, 0.4);
+            border-radius: 14px;
+            padding: 18px;
+            margin: 18px 0;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            font-family: var(--font-body);
         }
 
-        .ff-tag {
-            display: inline-block;
+        .finding-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             background: #dc2626;
             color: #fff;
-            font-size: 10.5px;
+            font-size: 11px;
             font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 4px;
+            padding: 3px 10px;
+            border-radius: 5px;
             margin-bottom: 8px;
         }
 
-        .ff-title {
-            font-size: 13.5px;
+        .finding-name {
+            font-size: 14px;
             font-weight: 700;
             color: #fff;
             margin-bottom: 6px;
         }
 
-        .ff-desc {
-            font-size: 12.5px;
+        .finding-text {
+            font-size: 13px;
             color: #c7d2fe;
-            line-height: 1.55;
+            line-height: 1.6;
         }
 
         /* 工作台右侧：商业决策面板 */
-        .wb-right-pane {
-            padding: 20px;
-            background: rgba(13, 21, 41, 0.45);
+        .wb-panel {
+            padding: 22px;
+            background: rgba(8, 14, 28, 0.5);
             overflow-y: auto;
         }
 
-        .decision-box {
-            background: rgba(30, 41, 59, 0.55);
+        .decision-card {
+            background: rgba(30, 41, 59, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            transition: all 0.2s;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 18px;
+            transition: all 0.25s;
         }
 
-        .decision-box:hover {
-            border-color: rgba(255, 255, 255, 0.18);
-            background: rgba(30, 41, 59, 0.75);
+        .decision-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(30, 41, 59, 0.85);
+            transform: translateY(-2px);
         }
 
-        .decision-label {
-            font-size: 11px;
-            color: var(--cyan-400);
+        .d-head {
+            font-size: 11.5px;
+            color: var(--cyan-glow);
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .decision-val {
-            font-size: 13px;
+        .d-body {
+            font-size: 13.5px;
             font-weight: 600;
             color: #fff;
-            line-height: 1.45;
+            line-height: 1.5;
         }
 
-        /* 通用章节样式 */
-        .section-wrap {
-            margin-bottom: 140px;
+        /* 章节通用样式 */
+        .section-block {
+            margin-bottom: 150px;
         }
 
-        .sec-head {
+        .section-header-wrap {
             text-align: center;
-            margin-bottom: 64px;
+            margin-bottom: 70px;
         }
 
-        .sec-pill {
-            display: inline-block;
+        .section-tag-glow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             font-size: 12px;
             font-weight: 800;
-            color: var(--cyan-400);
+            color: var(--cyan-glow);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             margin-bottom: 14px;
             font-family: var(--font-code);
         }
 
-        .sec-title {
-            font-size: 40px;
-            font-weight: 800;
-            letter-spacing: -1.2px;
+        .section-h2 {
+            font-family: var(--font-display);
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: -1.5px;
             color: #fff;
             margin-bottom: 18px;
         }
 
-        .sec-subtitle {
-            font-size: 16.5px;
-            color: var(--text-secondary);
-            max-width: 700px;
+        .section-p {
+            font-size: 17px;
+            color: var(--text-dim);
+            max-width: 720px;
             margin: 0 auto;
         }
 
-        /* 核心对比区 Glass 卡片 */
-        .versus-grid {
+        /* 对比区域 Glass 卡片 */
+        .versus-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 32px;
         }
 
-        .versus-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 40px;
-            backdrop-filter: blur(24px);
-            border: 1px solid var(--border-subtle);
+        .v-box {
+            background: var(--bg-glass-1);
+            border-radius: 24px;
+            padding: 42px;
+            backdrop-filter: blur(28px);
+            border: 1px solid var(--border-glass);
             position: relative;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
         }
 
-        .vc-bad {
-            border-color: rgba(244, 63, 94, 0.3);
-            background: radial-gradient(circle at 100% 0%, rgba(244, 63, 94, 0.06) 0%, transparent 65%), var(--bg-card);
+        .vb-bad {
+            border-color: rgba(244, 63, 94, 0.35);
+            background: radial-gradient(circle at 100% 0%, rgba(244, 63, 94, 0.08) 0%, transparent 70%), var(--bg-glass-1);
         }
 
-        .vc-good {
-            border-color: rgba(56, 189, 248, 0.4);
-            background: radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 65%), var(--bg-card);
-            box-shadow: 0 0 60px rgba(56, 189, 248, 0.1);
+        .vb-good {
+            border-color: rgba(56, 189, 248, 0.45);
+            background: radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.12) 0%, transparent 70%), var(--bg-glass-1);
+            box-shadow: 0 0 70px rgba(56, 189, 248, 0.12);
         }
 
-        .vc-badge {
+        .v-badge-pill {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 5px 14px;
+            padding: 6px 16px;
             border-radius: 9999px;
-            font-size: 12.5px;
+            font-size: 13px;
             font-weight: 700;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
         }
-        .vcb-bad { background: rgba(244, 63, 94, 0.16); color: #fb7185; }
-        .vcb-good { background: rgba(56, 189, 248, 0.16); color: #38bdf8; }
+        .vbp-bad { background: rgba(244, 63, 94, 0.18); color: #fb7185; }
+        .vbp-good { background: rgba(56, 189, 248, 0.18); color: #38bdf8; }
 
-        .vc-list {
+        .v-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 22px;
+            gap: 24px;
         }
 
-        .vc-item {
+        .v-item {
             display: flex;
             gap: 16px;
-            font-size: 14.5px;
-            line-height: 1.6;
+            font-size: 15px;
+            line-height: 1.65;
         }
 
-        .vc-item-title {
+        .v-item i {
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .v-item-bold {
             font-weight: 700;
             color: #fff;
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
-        /* 动态四道 Gate 节点 */
-        .pipeline-flow {
+        /* 四道 Gate 节点动态流向 */
+        .gate-flow-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 22px;
+            gap: 24px;
             position: relative;
         }
 
-        .gate-flow-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 18px;
-            padding: 30px;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        .gate-step-card {
+            background: var(--bg-glass-1);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 32px;
+            backdrop-filter: blur(24px);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
             position: relative;
         }
 
-        .gate-flow-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--cyan-400);
-            box-shadow: 0 20px 45px rgba(56, 189, 248, 0.18);
-            background: var(--bg-card-hover);
+        .gate-step-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--cyan-glow);
+            box-shadow: 0 25px 50px rgba(56, 189, 248, 0.2);
+            background: var(--bg-glass-2);
         }
 
-        .g-num {
+        .gate-badge-index {
             font-size: 12px;
             font-weight: 800;
             font-family: var(--font-code);
-            color: var(--cyan-400);
+            color: var(--cyan-glow);
             background: rgba(56, 189, 248, 0.12);
-            padding: 4px 12px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-bottom: 18px;
+            padding: 5px 14px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
             border: 1px solid rgba(56, 189, 248, 0.25);
         }
 
-        .g-title {
-            font-size: 19px;
+        .gate-h3 {
+            font-size: 20px;
             font-weight: 700;
             color: #fff;
             margin-bottom: 12px;
         }
 
-        .g-desc {
-            font-size: 13.5px;
-            color: var(--text-secondary);
-            line-height: 1.65;
+        .gate-desc-text {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.7;
         }
 
         /* 案例沙盒 */
-        .sandbox-container {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 20px;
+        .sandbox-card-wrap {
+            background: var(--bg-glass-1);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
         }
 
-        .sb-nav {
+        .sandbox-nav-bar {
             display: flex;
-            background: rgba(13, 21, 41, 0.85);
-            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(8, 14, 28, 0.85);
+            border-bottom: 1px solid var(--border-glass);
             overflow-x: auto;
         }
 
-        .sb-tab-btn {
-            padding: 18px 30px;
-            font-size: 14px;
+        .sb-trigger-btn {
+            padding: 20px 32px;
+            font-size: 14.5px;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--text-dim);
             cursor: pointer;
             border-bottom: 2px solid transparent;
             white-space: nowrap;
-            transition: all 0.2s;
+            transition: all 0.25s;
             background: transparent;
             border-top: none;
             border-left: none;
             border-right: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .sb-tab-btn:hover {
+        .sb-trigger-btn:hover {
             color: #fff;
         }
 
-        .sb-tab-btn.active {
-            color: var(--cyan-400);
-            border-bottom-color: var(--cyan-400);
-            background: rgba(56, 189, 248, 0.06);
+        .sb-trigger-btn.active {
+            color: var(--cyan-glow);
+            border-bottom-color: var(--cyan-glow);
+            background: rgba(56, 189, 248, 0.08);
         }
 
-        .sb-grid {
-            padding: 34px;
+        .sb-display-grid {
+            padding: 36px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 32px;
         }
 
-        .sb-pane {
-            background: var(--bg-card-inner);
+        .sb-code-card {
+            background: var(--bg-pane);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 26px;
         }
 
-        .sb-pane-header {
+        .sb-card-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
             font-size: 12px;
             font-weight: 800;
             font-family: var(--font-code);
-            color: var(--text-muted);
+            color: var(--text-dark);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 18px;
         }
 
-        .sb-code-box {
+        .sb-code-pre {
             font-family: var(--font-code);
-            font-size: 12.5px;
+            font-size: 13px;
             color: #cbd5e1;
-            line-height: 1.75;
+            line-height: 1.8;
             white-space: pre-wrap;
-            max-height: 440px;
+            max-height: 450px;
             overflow-y: auto;
         }
 
-        /* 14 大模块矩阵卡片 */
-        .modules-3col {
+        /* 14 大模块网格矩阵 */
+        .modules-grid-wrap {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            gap: 26px;
         }
 
-        .mod-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 26px;
-            transition: all 0.25s;
-            backdrop-filter: blur(16px);
+        .mod-item-card {
+            background: var(--bg-glass-1);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 28px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(20px);
         }
 
-        .mod-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(255, 255, 255, 0.25);
-            background: var(--bg-card-hover);
+        .mod-item-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.28);
+            background: var(--bg-glass-2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
         }
 
-        .mod-tag {
+        .mod-cat {
             font-size: 11px;
             font-weight: 800;
             font-family: var(--font-code);
-            color: var(--cyan-400);
+            color: var(--cyan-glow);
             margin-bottom: 10px;
             text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .mod-title {
-            font-size: 17px;
+        .mod-name-h4 {
+            font-size: 18px;
             font-weight: 700;
             color: #fff;
             margin-bottom: 12px;
         }
 
-        .mod-body {
-            font-size: 13.5px;
-            color: var(--text-secondary);
-            line-height: 1.65;
+        .mod-text-p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.7;
         }
 
         /* 评测对比表 */
-        .eval-table-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 18px;
+        .eval-card-box {
+            background: var(--bg-glass-1);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
         }
 
-        table.dark-table {
+        table.dark-eval-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14.5px;
+            font-size: 15px;
         }
 
-        table.dark-table th {
-            background: rgba(30, 41, 59, 0.65);
-            padding: 20px 26px;
+        table.dark-eval-table th {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 22px 28px;
             text-align: left;
             font-weight: 700;
             color: #fff;
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-glass);
         }
 
-        table.dark-table td {
-            padding: 22px 26px;
+        table.dark-eval-table td {
+            padding: 24px 28px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        table.dark-table tr:last-child td {
+        table.dark-eval-table tr:last-child td {
             border-bottom: none;
         }
 
-        /* 安装生态与快速复制 */
-        .install-jumbotron {
-            background: radial-gradient(circle at center, rgba(14, 165, 233, 0.12) 0%, transparent 75%), var(--bg-card);
-            border: 1px solid var(--border-glow-cyan);
-            border-radius: 22px;
-            padding: 52px;
+        /* 一键安装 Jumbotron */
+        .install-box-hero {
+            background: radial-gradient(circle at center, rgba(14, 165, 233, 0.15) 0%, transparent 75%), var(--bg-glass-1);
+            border: 1px solid var(--border-cyan);
+            border-radius: 24px;
+            padding: 60px;
             text-align: center;
-            box-shadow: 0 0 60px rgba(14, 165, 233, 0.12);
+            box-shadow: 0 0 70px rgba(14, 165, 233, 0.15);
         }
 
-        .copy-terminal-bar {
-            background: #050a17;
-            border: 1px solid rgba(255, 255, 255, 0.16);
+        .terminal-copy-box {
+            background: #040714;
+            border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 14px;
-            padding: 16px 22px;
+            padding: 18px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            max-width: 700px;
-            margin: 30px auto 0 auto;
+            max-width: 740px;
+            margin: 32px auto 0 auto;
             font-family: var(--font-code);
             font-size: 14px;
-            color: var(--cyan-400);
+            color: var(--cyan-glow);
         }
 
-        .copy-btn-action {
+        .btn-copy-code {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            padding: 9px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 12.5px;
+            font-size: 13px;
             font-weight: 700;
-            transition: all 0.2s;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .copy-btn-action:hover {
-            background: var(--cyan-400);
+        .btn-copy-code:hover {
+            background: var(--cyan-glow);
             color: #000;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
         }
 
         /* 页脚 */
         footer {
-            border-top: 1px solid var(--border-subtle);
-            padding: 50px 0;
-            color: var(--text-muted);
-            font-size: 13.5px;
+            border-top: 1px solid var(--border-glass);
+            padding: 60px 0;
+            color: var(--text-dark);
+            font-size: 14px;
             text-align: center;
-            background: rgba(3, 7, 18, 0.95);
+            background: rgba(3, 5, 12, 0.98);
         }
 
         footer a {
-            color: var(--text-secondary);
+            color: var(--text-dim);
             text-decoration: none;
             transition: color 0.2s;
         }
 
         footer a:hover {
-            color: var(--cyan-400);
+            color: var(--cyan-glow);
         }
 
         @media (max-width: 1024px) {
-            .hero-headline { font-size: 42px; }
-            .mac-body { grid-template-columns: 1fr; }
-            .wb-left-pane, .wb-right-pane { display: none; }
-            .stats-grid, .pipeline-flow, .modules-3col, .versus-grid { grid-template-columns: 1fr; }
-            .sb-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 42px; }
+            .mac-grid { grid-template-columns: 1fr; }
+            .wb-sidebar, .wb-panel { display: none; }
+            .stats-bento, .gate-flow-grid, .modules-grid-wrap, .versus-row { grid-template-columns: 1fr; }
+            .sb-display-grid { grid-template-columns: 1fr; }
             .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 极光背景光效 -->
-    <div class="aurora-bg">
-        <div class="aurora-glow-1"></div>
-        <div class="aurora-glow-2"></div>
-        <div class="grid-overlay"></div>
-    </div>
+    <!-- 交互式物理力场 Canvas 画布 -->
+    <canvas id="interactive-canvas"></canvas>
 
-    <!-- 顶部毛玻璃导航 -->
+    <!-- 顶部导航 -->
     <header>
         <div class="container nav-inner">
-            <a href="#" class="logo-group">
-                <div class="logo-symbol">CL</div>
-                <div class="logo-text">China Legal OS</div>
+            <a href="#" class="logo-wrap">
+                <div class="logo-icon">
+                    <i data-lucide="scale" style="width: 20px; height: 20px;"></i>
+                </div>
+                <span class="logo-brand">China Legal OS</span>
             </a>
             <ul class="nav-links">
-                <li><a href="#features">核心机制</a></li>
-                <li><a href="#workspace">工作台演示</a></li>
-                <li><a href="#pipeline">四道 Gate</a></li>
-                <li><a href="#sandbox">实战案例</a></li>
-                <li><a href="#modules">业务模块</a></li>
-                <li><a href="#evals">基准评测</a></li>
+                <li><a href="#features"><i data-lucide="sparkles" style="width: 15px; height: 15px;"></i>核心机制</a></li>
+                <li><a href="#workspace"><i data-lucide="terminal" style="width: 15px; height: 15px;"></i>工作台演示</a></li>
+                <li><a href="#pipeline"><i data-lucide="shield-check" style="width: 15px; height: 15px;"></i>四道 Gate</a></li>
+                <li><a href="#sandbox"><i data-lucide="folder-code" style="width: 15px; height: 15px;"></i>实战案例</a></li>
+                <li><a href="#modules"><i data-lucide="layout-grid" style="width: 15px; height: 15px;"></i>业务模块</a></li>
+                <li><a href="#evals"><i data-lucide="bar-chart-3" style="width: 15px; height: 15px;"></i>基准评测</a></li>
             </ul>
-            <a href="https://github.com/245678000000/china-legal-os" target="_blank" class="nav-btn">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <a href="https://github.com/245678000000/china-legal-os" target="_blank" class="nav-cta">
+                <i data-lucide="github" style="width: 16px; height: 16px;"></i>
                 GitHub 仓库
             </a>
         </div>
@@ -1027,120 +1055,151 @@
     <main class="container">
 
         <!-- Hero 区域 -->
-        <section class="hero-section">
-            <div class="pill-badge">
-                <span class="pill-dot"></span>
+        <section class="hero">
+            <div class="hero-pill">
+                <i data-lucide="cpu" style="width: 16px; height: 16px;"></i>
                 <span>China Legal OS v0.1 • 工业级企业法务 AI 系统</span>
             </div>
             
-            <h1 class="hero-headline">
+            <h1 class="hero-title">
                 面向中国大陆企业法务的<br>
                 <span class="gradient-text">模块化 AI 工作系统</span>
             </h1>
             
-            <p class="hero-subheadline">
+            <p class="hero-subtitle">
                 告别单体 Prompt 的法律幻觉与空洞套话。<br>
                 让通用大模型按照企业法务真实决策流深度协同：事实分类 ➔ 要件拆解 ➔ 证据链核验 ➔ 红队对抗 ➔ 落地商业七问。
             </p>
 
-            <div class="hero-cta-group">
-                <a href="#install" class="btn-glow-primary">一键安装至 Agent</a>
-                <a href="#workspace" class="btn-glass-secondary">体验法务工作台 (支持点击切换)</a>
+            <div class="hero-actions">
+                <a href="#install" class="btn-glow">
+                    <i data-lucide="download" style="width: 18px; height: 18px;"></i>
+                    一键安装至 Agent
+                </a>
+                <a href="#workspace" class="btn-glass">
+                    <i data-lucide="play" style="width: 18px; height: 18px;"></i>
+                    交互式工作台体验
+                </a>
             </div>
 
-            <!-- 4 大核心指标卡片 -->
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-desc">Layer 1 门禁通过率 (14/14)</div>
+            <!-- 4 大核心指标 Bento 卡片 -->
+            <div class="stats-bento">
+                <div class="stat-box">
+                    <div class="stat-val">100%</div>
+                    <div class="stat-title"><i data-lucide="shield-check" style="width: 16px; height: 16px; color: #34d399;"></i>Layer 1 门禁通过率 (14/14)</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">0</div>
-                    <div class="stat-desc">自产虚拟案号 (绝对禁令拦截)</div>
+                <div class="stat-box">
+                    <div class="stat-val">0</div>
+                    <div class="stat-title"><i data-lucide="file-x-2" style="width: 16px; height: 16px; color: #38bdf8;"></i>自产虚拟案号 (绝对禁令拦截)</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">100 / 100</div>
-                    <div class="stat-desc">全系统健康体检得分 (Doctor)</div>
+                <div class="stat-box">
+                    <div class="stat-val">100 / 100</div>
+                    <div class="stat-title"><i data-lucide="activity" style="width: 16px; height: 16px; color: #a855f7;"></i>全系统健康体检得分 (Doctor)</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">14 + 8</div>
-                    <div class="stat-desc">实操业务模块 + 交付物模板</div>
+                <div class="stat-box">
+                    <div class="stat-val">14 + 8</div>
+                    <div class="stat-title"><i data-lucide="layers" style="width: 16px; height: 16px; color: #fbbf24;"></i>实操业务模块 + 交付物模板</div>
                 </div>
             </div>
         </section>
 
         <!-- ==========================================================================
-             macOS 企业法务工作台 Mockup (支持 3 个 Tab 实时切换)
+             先锋横向流光跑马灯 Ticker
         ========================================================================== -->
-        <section id="workspace" class="section-wrap">
-            <div class="sec-head">
-                <span class="sec-pill">Interactive Workspace</span>
-                <h2 class="sec-title">沉浸式法务决策工作台</h2>
-                <p class="sec-subtitle">点击上方标签页，即时体验不同法务场景下的全流程三栏智能交互</p>
+        <div class="marquee-wrap">
+            <div class="marquee-track">
+                <div class="marquee-item"><i data-lucide="check-circle-2" style="width: 16px; height: 16px;"></i> 100% Quality Gates Integrity</div>
+                <div class="marquee-item"><i data-lucide="database" style="width: 16px; height: 16px;"></i> Zero Hallucinated Citations</div>
+                <div class="marquee-item"><i data-lucide="scale" style="width: 16px; height: 16px;"></i> Fact-First Legal Reasoning</div>
+                <div class="marquee-item"><i data-lucide="shield" style="width: 16px; height: 16px;"></i> CN-Mainland Jurisdiction Ready</div>
+                <div class="marquee-item"><i data-lucide="calculator" style="width: 16px; height: 16px;"></i> 4-Element Min Certainty Formula</div>
+                <div class="marquee-item"><i data-lucide="check-circle-2" style="width: 16px; height: 16px;"></i> 100% Quality Gates Integrity</div>
+                <div class="marquee-item"><i data-lucide="database" style="width: 16px; height: 16px;"></i> Zero Hallucinated Citations</div>
+                <div class="marquee-item"><i data-lucide="scale" style="width: 16px; height: 16px;"></i> Fact-First Legal Reasoning</div>
+                <div class="marquee-item"><i data-lucide="shield" style="width: 16px; height: 16px;"></i> CN-Mainland Jurisdiction Ready</div>
+                <div class="marquee-item"><i data-lucide="calculator" style="width: 16px; height: 16px;"></i> 4-Element Min Certainty Formula</div>
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             macOS 企业法务决策工作台 (支持 3 个 Tab 实时切换)
+        ========================================================================== -->
+        <section id="workspace" class="section-block">
+            <div class="section-header-wrap">
+                <span class="section-tag-glow"><i data-lucide="terminal" style="width: 16px; height: 16px;"></i>Interactive Workspace</span>
+                <h2 class="section-h2">沉浸式法务决策工作台</h2>
+                <p class="section-p">点击上方标签页，即时体验不同法务场景下的全流程三栏智能交互</p>
             </div>
 
-            <div class="workspace-mockup">
+            <div class="workspace-card">
                 <!-- 窗口控制条 -->
-                <div class="mac-window-bar">
-                    <div class="mac-traffic-lights">
-                        <div class="mac-light ml-red"></div>
-                        <div class="mac-light ml-yellow"></div>
-                        <div class="mac-light ml-green"></div>
+                <div class="mac-bar">
+                    <div class="mac-dots">
+                        <div class="mac-dot md-red"></div>
+                        <div class="mac-dot md-yellow"></div>
+                        <div class="mac-dot md-green"></div>
                     </div>
-                    <div class="mac-tabs">
-                        <button class="mac-tab-btn active" onclick="switchMacTab(0)">
-                            <span>📄</span> Contract-Review.md
+                    <div class="mac-tabs-list">
+                        <button class="mac-tab-trigger active" onclick="switchMacTab(0)">
+                            <i data-lucide="file-text" style="width: 14px; height: 14px;"></i>
+                            <span>Contract-Review.md</span>
                         </button>
-                        <button class="mac-tab-btn" onclick="switchMacTab(1)">
-                            <span>🛡️</span> Evidence-Matrix.md
+                        <button class="mac-tab-trigger" onclick="switchMacTab(1)">
+                            <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+                            <span>Evidence-Matrix.md</span>
                         </button>
-                        <button class="mac-tab-btn" onclick="switchMacTab(2)">
-                            <span>📊</span> Executive-Brief.md
+                        <button class="mac-tab-trigger" onclick="switchMacTab(2)">
+                            <i data-lucide="briefcase" style="width: 14px; height: 14px;"></i>
+                            <span>Executive-Brief.md</span>
                         </button>
                     </div>
-                    <div class="mac-meta-tag" id="mac-status-tag">
-                        <span style="color: #34d399;">●</span> Review Basis: 通用商业标准 ｜ G4 PASS
+                    <div class="mac-status-text" id="mac-status-text">
+                        <i data-lucide="check-circle" style="width: 14px; height: 14px; color: #34d399;"></i>
+                        Review Basis: 通用商业标准 ｜ G4 PASS
                     </div>
                 </div>
 
                 <!-- 工作台三栏主体 -->
-                <div class="mac-body fade-in" id="mac-content-body">
+                <div class="mac-grid fade-transition" id="mac-content-grid">
                     <!-- 动态注入三栏内容 -->
                 </div>
             </div>
         </section>
 
         <!-- 核心痛点与机制对比 -->
-        <section id="features" class="section-wrap">
-            <div class="sec-head">
-                <span class="sec-pill">Paradigm Shift</span>
-                <h2 class="sec-title">告别单体 Prompt 幻觉，回归严谨法务工作流</h2>
-                <p class="sec-subtitle">深度对比通用大模型单体 Prompt 与 China Legal OS 在真实企业法务场景下的质感差异</p>
+        <section id="features" class="section-block">
+            <div class="section-header-wrap">
+                <span class="section-tag-glow"><i data-lucide="zap" style="width: 16px; height: 16px;"></i>Paradigm Shift</span>
+                <h2 class="section-h2">告别单体 Prompt 幻觉，回归严谨法务工作流</h2>
+                <p class="section-p">深度对比通用大模型单体 Prompt 与 China Legal OS 在真实企业法务场景下的质感差异</p>
             </div>
 
-            <div class="versus-grid">
+            <div class="versus-row">
                 <!-- 错误范式 -->
-                <div class="versus-card vc-bad">
-                    <span class="vc-badge vcb-bad">✕ 普通单体 Prompt / 法律问答</span>
-                    <ul class="vc-list">
-                        <li class="vc-item">
-                            <span style="color: #f87171; font-weight: 800;">✕</span>
+                <div class="v-box vb-bad">
+                    <span class="v-badge-pill vbp-bad">
+                        <i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>
+                        普通单体 Prompt / 法律问答
+                    </span>
+                    <ul class="v-list">
+                        <li class="v-item">
+                            <i data-lucide="x" style="width: 18px; height: 18px; color: #fb7185;"></i>
                             <div>
-                                <span class="vc-item-title">顺着用户主张产生幻觉</span>
+                                <span class="v-item-bold">顺着用户主张产生幻觉</span>
                                 用户说“前员工窃取了商业秘密”，AI 顺着直接定性并给出起诉建议，忽视保密措施三要件。
                             </div>
                         </li>
-                        <li class="vc-item">
-                            <span style="color: #f87171; font-weight: 800;">✕</span>
+                        <li class="v-item">
+                            <i data-lucide="x" style="width: 18px; height: 18px; color: #fb7185;"></i>
                             <div>
-                                <span class="vc-item-title">虚构裁判文书与案号</span>
+                                <span class="v-item-bold">虚构裁判文书与案号</span>
                                 自行编造看似真实的最高院民终案号，造成极度危险的法律虚假引用。
                             </div>
                         </li>
-                        <li class="vc-item">
-                            <span style="color: #f87171; font-weight: 800;">✕</span>
+                        <li class="v-item">
+                            <i data-lucide="x" style="width: 18px; height: 18px; color: #fb7185;"></i>
                             <div>
-                                <span class="vc-item-title">空洞无用的合规套话</span>
+                                <span class="v-item-bold">空洞无用的合规套话</span>
                                 通篇输出“存在一定法律风险，建议咨询当地专业律师”，缺乏任何商业可行性落地路径。
                             </div>
                         </li>
@@ -1148,27 +1207,30 @@
                 </div>
 
                 <!-- 正确范式 -->
-                <div class="versus-card vc-good">
-                    <span class="vc-badge vcb-good">✓ China Legal OS 模块化工作流</span>
-                    <ul class="vc-list">
-                        <li class="vc-item">
-                            <span style="color: #38bdf8; font-weight: 800;">✓</span>
+                <div class="v-box vb-good">
+                    <span class="v-badge-pill vbp-good">
+                        <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+                        China Legal OS 模块化工作流
+                    </span>
+                    <ul class="v-list">
+                        <li class="v-item">
+                            <i data-lucide="check" style="width: 18px; height: 18px; color: #38bdf8;"></i>
                             <div>
-                                <span class="vc-item-title">严格事实分类与要件重构</span>
+                                <span class="v-item-bold">严格事实分类与要件重构</span>
                                 区分 Confirmed 事实与 Alleged 主张，以事实为唯一依据重新拆解法定构成要件。
                             </div>
                         </li>
-                        <li class="vc-item">
-                            <span style="color: #38bdf8; font-weight: 800;">✓</span>
+                        <li class="v-item">
+                            <i data-lucide="check" style="width: 18px; height: 18px; color: #38bdf8;"></i>
                             <div>
-                                <span class="vc-item-title">M2 案号绝对禁令与检索指引</span>
+                                <span class="v-item-bold">M2 案号绝对禁令与检索指引</span>
                                 0 虚拟案号强正则拦截，条号标注〔条号未核验〕，输出人民法院案例库检索指引。
                             </div>
                         </li>
-                        <li class="vc-item">
-                            <span style="color: #38bdf8; font-weight: 800;">✓</span>
+                        <li class="v-item">
+                            <i data-lucide="check" style="width: 18px; height: 18px; color: #38bdf8;"></i>
                             <div>
-                                <span class="vc-item-title">商业落地七问与可执行方案</span>
+                                <span class="v-item-bold">商业落地七问与可执行方案</span>
                                 明确最不坏路径、退让底线 (Fallback)、审批升级矩阵与今日具体执行责任人。
                             </div>
                         </li>
@@ -1178,60 +1240,72 @@
         </section>
 
         <!-- 四道 Gate 质量门禁 -->
-        <section id="pipeline" class="section-wrap">
-            <div class="sec-head">
-                <span class="sec-pill">Quality Gates</span>
-                <h2 class="sec-title">四道 Gate 质量门禁体系</h2>
-                <p class="sec-subtitle">全流水线严密拦截，确保每一份法务交付物 100% 严谨可靠</p>
+        <section id="pipeline" class="section-block">
+            <div class="section-header-wrap">
+                <span class="section-tag-glow"><i data-lucide="shield" style="width: 16px; height: 16px;"></i>Quality Gates</span>
+                <h2 class="section-h2">四道 Gate 质量门禁体系</h2>
+                <p class="section-p">全流水线严密拦截，确保每一份法务交付物 100% 严谨可靠</p>
             </div>
 
-            <div class="pipeline-flow">
-                <div class="gate-flow-card">
-                    <span class="g-num">GATE 1</span>
-                    <h3 class="g-title">G1 事实分类闸</h3>
-                    <p class="g-desc">锁定基础事实，严格分离已证实事实、单方主张与缺失事实，严禁顺着情绪化主张直接定性。</p>
+            <div class="gate-flow-grid">
+                <div class="gate-step-card">
+                    <span class="gate-badge-index"><i data-lucide="filter" style="width: 14px; height: 14px;"></i>GATE 1</span>
+                    <h3 class="gate-h3">G1 事实分类闸</h3>
+                    <p class="gate-desc-text">锁定基础事实，严格分离已证实事实、单方主张与缺失事实，严禁顺着情绪化主张直接定性。</p>
                 </div>
-                <div class="gate-flow-card">
-                    <span class="g-num">GATE 2</span>
-                    <h3 class="g-title">G2 法源等级闸</h3>
-                    <p class="g-desc">按法律位阶（L1-L4）核验法源有效性，严禁虚构未出台法规，条号标注〔条号未核验〕，触发 M2 案号禁令。</p>
+                <div class="gate-step-card">
+                    <span class="gate-badge-index"><i data-lucide="book-open" style="width: 14px; height: 14px;"></i>GATE 2</span>
+                    <h3 class="gate-h3">G2 法源等级闸</h3>
+                    <p class="gate-desc-text">按法律位阶（L1-L4）核验法源有效性，严禁虚构未出台法规，条号标注〔条号未核验〕，触发 M2 案号禁令。</p>
                 </div>
-                <div class="gate-flow-card">
-                    <span class="g-num">GATE 3</span>
-                    <h3 class="g-title">G3 证据核验闸</h3>
-                    <p class="g-desc">构建证据逐项映射矩阵，执行四元 min 规则：min(法律, 证据, 事实, 法源)，关键证据缺失时强制下调确定性。</p>
+                <div class="gate-step-card">
+                    <span class="gate-badge-index"><i data-lucide="scale" style="width: 14px; height: 14px;"></i>GATE 3</span>
+                    <h3 class="gate-h3">G3 证据核验闸</h3>
+                    <p class="gate-desc-text">构建证据逐项映射矩阵，执行四元 min 规则：min(法律, 证据, 事实, 法源)，关键证据缺失时强制下调确定性。</p>
                 </div>
-                <div class="gate-flow-card">
-                    <span class="g-num">GATE 4</span>
-                    <h3 class="g-title">G4 交付质量闸</h3>
-                    <p class="g-desc">装配 Review Basis 抬头，回答商业落地七问，生成待核验清单，与 12 个强约束 JSON Schema 100% 对齐。</p>
+                <div class="gate-step-card">
+                    <span class="gate-badge-index"><i data-lucide="check-check" style="width: 14px; height: 14px;"></i>GATE 4</span>
+                    <h3 class="gate-h3">G4 交付质量闸</h3>
+                    <p class="gate-desc-text">装配 Review Basis 抬头，回答商业落地七问，生成待核验清单，与 12 个强约束 JSON Schema 100% 对齐。</p>
                 </div>
             </div>
         </section>
 
         <!-- 4 套实战案例沙盒 -->
-        <section id="sandbox" class="section-wrap">
-            <div class="sec-head">
-                <span class="sec-pill">Case Studies</span>
-                <h2 class="sec-title">4 套端到端实战案例在线沙盒</h2>
-                <p class="sec-subtitle">涵盖重大技术采购审查、商业秘密维权、劳动人事合规与 Lane A 快问快答</p>
+        <section id="sandbox" class="section-block">
+            <div class="section-header-wrap">
+                <span class="section-tag-glow"><i data-lucide="folder" style="width: 16px; height: 16px;"></i>Case Studies</span>
+                <h2 class="section-h2">4 套端到端实战案例在线沙盒</h2>
+                <p class="section-p">涵盖重大技术采购审查、商业秘密维权、劳动人事合规与 Lane A 快问快答</p>
             </div>
 
-            <div class="sandbox-container">
-                <div class="sb-nav">
-                    <button class="sb-tab-btn active" onclick="switchCaseTab(0)">01. 150万技术采购合同审查 (Lane B)</button>
-                    <button class="sb-tab-btn" onclick="switchCaseTab(1)">02. 离职算法专家泄密维权 (Lane C)</button>
-                    <button class="sb-tab-btn" onclick="switchCaseTab(2)">03. 考核不合格辞退与 2N 测算 (Lane B)</button>
-                    <button class="sb-tab-btn" onclick="switchCaseTab(3)">04. 合同未写日期公章效力 (Lane A)</button>
+            <div class="sandbox-card-wrap">
+                <div class="sandbox-nav-bar">
+                    <button class="sb-trigger-btn active" onclick="switchCaseTab(0)">
+                        <i data-lucide="file-check-2" style="width: 16px; height: 16px;"></i>
+                        01. 150万技术采购合同审查 (Lane B)
+                    </button>
+                    <button class="sb-trigger-btn" onclick="switchCaseTab(1)">
+                        <i data-lucide="shield-alert" style="width: 16px; height: 16px;"></i>
+                        02. 离职算法专家泄密维权 (Lane C)
+                    </button>
+                    <button class="sb-trigger-btn" onclick="switchCaseTab(2)">
+                        <i data-lucide="user-minus" style="width: 16px; height: 16px;"></i>
+                        03. 考核不合格辞退与 2N 测算 (Lane B)
+                    </button>
+                    <button class="sb-trigger-btn" onclick="switchCaseTab(3)">
+                        <i data-lucide="message-square" style="width: 16px; height: 16px;"></i>
+                        04. 合同未写日期公章效力 (Lane A)
+                    </button>
                 </div>
 
-                <div class="sb-grid">
-                    <div class="sb-pane">
-                        <div class="sb-pane-header">
-                            <span>原始输入 & 材料片段</span>
-                            <span style="color: var(--cyan-400);">INPUT</span>
+                <div class="sb-display-grid">
+                    <div class="sb-code-card">
+                        <div class="sb-card-top">
+                            <span style="display: flex; align-items: center; gap: 6px;"><i data-lucide="file-input" style="width: 14px; height: 14px;"></i> 原始输入 & 材料片段</span>
+                            <span style="color: var(--cyan-glow);">INPUT</span>
                         </div>
-                        <div class="sb-code-box" id="sb-input-box">大数据技术服务采购协议（标的 150 万元）
+                        <div class="sb-code-pre" id="sb-input-box">大数据技术服务采购协议（标的 150 万元）
 甲方：北京知远数据科技有限公司（采购方）
 乙方：华东云智信息系统有限公司（服务方）
 
@@ -1244,12 +1318,12 @@
 4.2 责任上限：乙方承担的全部赔偿总额不得超过已付金额的 10%。</div>
                     </div>
 
-                    <div class="sb-pane">
-                        <div class="sb-pane-header">
-                            <span>China Legal OS 结构化交付</span>
-                            <span style="color: var(--emerald-400);">OUTPUT</span>
+                    <div class="sb-code-card">
+                        <div class="sb-card-top">
+                            <span style="display: flex; align-items: center; gap: 6px;"><i data-lucide="file-output" style="width: 14px; height: 14px;"></i> China Legal OS 结构化交付</span>
+                            <span style="color: var(--emerald-glow);">OUTPUT</span>
                         </div>
-                        <div class="sb-code-box" id="sb-output-box">【强制数值推演】
+                        <div class="sb-code-pre" id="sb-output-box">【强制数值推演】
 1. 违约金日费率 0.05% 达到 20% 上限：需连续违约 400 天才触顶（约束力过弱）
 2. 责任限制 10% 穿透：乙方最大赔偿仅 15 万元，架空救济
 
@@ -1267,72 +1341,72 @@
         </section>
 
         <!-- 14 大业务模块矩阵 -->
-        <section id="modules" class="section-wrap">
-            <div class="sec-head">
-                <span class="sec-pill">Full Coverage</span>
-                <h2 class="sec-title">14 个业务领域实操工作流</h2>
-                <p class="sec-subtitle">统一七段式架构，全景覆盖中国企业法务核心与高阶业务场景</p>
+        <section id="modules" class="section-block">
+            <div class="section-header-wrap">
+                <span class="section-tag-glow"><i data-lucide="grid" style="width: 16px; height: 16px;"></i>Full Coverage</span>
+                <h2 class="section-h2">14 个业务领域实操工作流</h2>
+                <p class="section-p">统一七段式架构，全景覆盖中国企业法务核心与高阶业务场景</p>
             </div>
 
-            <div class="modules-3col">
-                <div class="mod-card">
-                    <div class="mod-tag">Core 核心</div>
-                    <h4 class="mod-title">contract-review 合同审查</h4>
-                    <p class="mod-body">跨条款数值推演、400天触顶时间陷阱、8列审查表与可直接替换的修改条款。</p>
+            <div class="modules-grid-wrap">
+                <div class="mod-item-card">
+                    <div class="mod-cat"><i data-lucide="star" style="width: 12px; height: 12px;"></i> Core 核心</div>
+                    <h4 class="mod-name-h4">contract-review 合同审查</h4>
+                    <p class="mod-text-p">跨条款数值推演、400天触顶时间陷阱、8列审查表与可直接替换的修改条款。</p>
                 </div>
-                <div class="mod-card">
-                    <div class="mod-tag">Core 核心</div>
-                    <h4 class="mod-title">trade-secret 商业秘密</h4>
-                    <p class="mod-body">三要件举证责任核验、24h/3d 紧急公证存证、刑民交叉多维维权策略。</p>
+                <div class="mod-item-card">
+                    <div class="mod-cat"><i data-lucide="star" style="width: 12px; height: 12px;"></i> Core 核心</div>
+                    <h4 class="mod-name-h4">trade-secret 商业秘密</h4>
+                    <p class="mod-text-p">三要件举证责任核验、24h/3d 紧急公证存证、刑民交叉多维维权策略。</p>
                 </div>
-                <div class="mod-card">
-                    <div class="mod-tag">Core 核心</div>
-                    <h4 class="mod-title">labor 劳动用工合规</h4>
-                    <p class="mod-body">规章制度民主公示双重核验、法定培训调岗前置程序、2N 赔偿精准量化。</p>
+                <div class="mod-item-card">
+                    <div class="mod-cat"><i data-lucide="star" style="width: 12px; height: 12px;"></i> Core 核心</div>
+                    <h4 class="mod-name-h4">labor 劳动用工合规</h4>
+                    <p class="mod-text-p">规章制度民主公示双重核验、法定培训调岗前置程序、2N 赔偿精准量化。</p>
                 </div>
-                <div class="mod-card">
-                    <div class="mod-tag">Core 核心</div>
-                    <h4 class="mod-title">competition 不正当竞争</h4>
-                    <p class="mod-body">七类不正当竞争主动排查、商业诋毁事实定性分离、多元救济路径。</p>
+                <div class="mod-item-card">
+                    <div class="mod-cat"><i data-lucide="star" style="width: 12px; height: 12px;"></i> Core 核心</div>
+                    <h4 class="mod-name-h4">competition 不正当竞争</h4>
+                    <p class="mod-text-p">七类不正当竞争主动排查、商业诋毁事实定性分离、多元救济路径。</p>
                 </div>
-                <div class="mod-card">
-                    <div class="mod-tag">Core 核心</div>
-                    <h4 class="mod-title">ip 知识产权</h4>
-                    <p class="mod-body">权属独立核验（出资方不等于著作权人）、全面覆盖侵权比对与抗辩。</p>
+                <div class="mod-item-card">
+                    <div class="mod-cat"><i data-lucide="star" style="width: 12px; height: 12px;"></i> Core 核心</div>
+                    <h4 class="mod-name-h4">ip 知识产权</h4>
+                    <p class="mod-text-p">权属独立核验（出资方不等于著作权人）、全面覆盖侵权比对与抗辩。</p>
                 </div>
-                <div class="mod-card">
-                    <div class="mod-tag">Core 核心</div>
-                    <h4 class="mod-title">dispute 诉讼与仲裁</h4>
-                    <p class="mod-body">3年诉讼时效中断排查、管辖有效性、财产保全与执行可行性前置评估。</p>
+                <div class="mod-item-card">
+                    <div class="mod-cat"><i data-lucide="star" style="width: 12px; height: 12px;"></i> Core 核心</div>
+                    <h4 class="mod-name-h4">dispute 诉讼与仲裁</h4>
+                    <p class="mod-text-p">3年诉讼时效中断排查、管辖有效性、财产保全与执行可行性前置评估。</p>
                 </div>
-                <div class="mod-card">
-                    <div class="mod-tag">Secondary 次要</div>
-                    <h4 class="mod-title">corporate 公司治理</h4>
-                    <p class="mod-body">章程自治优先、新公司法 5 年认缴出资限期与 3 年过渡期减资实缴策略。</p>
+                <div class="mod-item-card">
+                    <div class="mod-cat"><i data-lucide="circle-dot" style="width: 12px; height: 12px;"></i> Secondary 次要</div>
+                    <h4 class="mod-name-h4">corporate 公司治理</h4>
+                    <p class="mod-text-p">章程自治优先、新公司法 5 年认缴出资限期与 3 年过渡期减资实缴策略。</p>
                 </div>
-                <div class="mod-card">
-                    <div class="mod-tag">Secondary 次要</div>
-                    <h4 class="mod-title">data-privacy 数据与出境</h4>
-                    <p class="mod-body">单独同意法定场景核验、数据出境三条合规路径（申报/认证/标准合同）。</p>
+                <div class="mod-item-card">
+                    <div class="mod-cat"><i data-lucide="circle-dot" style="width: 12px; height: 12px;"></i> Secondary 次要</div>
+                    <h4 class="mod-name-h4">data-privacy 数据与出境</h4>
+                    <p class="mod-text-p">单独同意法定场景核验、数据出境三条合规路径（申报/认证/标准合同）。</p>
                 </div>
-                <div class="mod-card">
-                    <div class="mod-tag">Secondary 次要</div>
-                    <h4 class="mod-title">compliance 监管准入</h4>
-                    <p class="mod-body">违法禁止 vs 监管审慎严格区分、牌照资质前置、广告极限词合规。</p>
+                <div class="mod-item-card">
+                    <div class="mod-cat"><i data-lucide="circle-dot" style="width: 12px; height: 12px;"></i> Secondary 次要</div>
+                    <h4 class="mod-name-h4">compliance 监管准入</h4>
+                    <p class="mod-text-p">违法禁止 vs 监管审慎严格区分、牌照资质前置、广告极限词合规。</p>
                 </div>
             </div>
         </section>
 
         <!-- 评测基线对照 -->
-        <section id="evals" class="section-wrap">
-            <div class="sec-head">
-                <span class="sec-pill">Benchmarks</span>
-                <h2 class="sec-title">14 个基准评测用例与三档对照</h2>
-                <p class="sec-subtitle">基于双层 Rubric（Layer 1 一票否决闸门 + Layer 2 评分）的严格跑测</p>
+        <section id="evals" class="section-block">
+            <div class="section-header-wrap">
+                <span class="section-tag-glow"><i data-lucide="bar-chart-2" style="width: 16px; height: 16px;"></i>Benchmarks</span>
+                <h2 class="section-h2">14 个基准评测用例与三档对照</h2>
+                <p class="section-p">基于双层 Rubric（Layer 1 一票否决闸门 + Layer 2 评分）的严格跑测</p>
             </div>
 
-            <div class="eval-table-box">
-                <table class="dark-table">
+            <div class="eval-card-box">
+                <table class="dark-eval-table">
                     <thead>
                         <tr>
                             <th>对比档位</th>
@@ -1346,8 +1420,8 @@
                         <tr>
                             <td><strong>Baseline-0</strong></td>
                             <td>裸模型直接提问</td>
-                            <td style="color: #fb7185;">20.0%</td>
-                            <td style="color: #fb7185;">60.0% (高频幻觉)</td>
+                            <td style="color: #fb7185; font-weight: 600;">20.0%</td>
+                            <td style="color: #fb7185; font-weight: 600;">60.0% (高频幻觉)</td>
                             <td>42.5 分</td>
                         </tr>
                         <tr>
@@ -1358,7 +1432,7 @@
                             <td>64.0 分</td>
                         </tr>
                         <tr style="background: rgba(56, 189, 248, 0.08);">
-                            <td><strong style="color: var(--cyan-400);">China Legal OS</strong></td>
+                            <td><strong style="color: var(--cyan-glow);">China Legal OS</strong></td>
                             <td>完整流水线 + 四道 Gate + 12 个 Schema</td>
                             <td style="color: #34d399; font-weight: 800;">100.0% (14/14)</td>
                             <td style="color: #34d399; font-weight: 800;">0.0% (绝对禁令)</td>
@@ -1370,15 +1444,18 @@
         </section>
 
         <!-- 快速安装与配置 -->
-        <section id="install" class="section-wrap">
-            <div class="install-jumbotron">
-                <span class="sec-pill">Ready to Deploy</span>
-                <h2 class="sec-title" style="margin-bottom: 14px;">一键安装至各大 AI 智能体环境</h2>
-                <p class="sec-subtitle">支持 Claude Code、Codex、Antigravity (Gemini) 与本地命令行 CLI</p>
+        <section id="install" class="section-block">
+            <div class="install-box-hero">
+                <span class="section-tag-glow"><i data-lucide="terminal" style="width: 16px; height: 16px;"></i>Ready to Deploy</span>
+                <h2 class="section-h2" style="margin-bottom: 14px;">一键安装至各大 AI 智能体环境</h2>
+                <p class="section-p">支持 Claude Code、Codex、Antigravity (Gemini) 与本地命令行 CLI</p>
                 
-                <div class="copy-terminal-bar">
+                <div class="terminal-copy-box">
                     <span>git clone https://github.com/245678000000/china-legal-os.git && cd china-legal-os && ./scripts/install.sh</span>
-                    <button class="copy-btn-action" onclick="copyInstallScript(this)">复制命令</button>
+                    <button class="btn-copy-code" onclick="copyInstallScript(this)">
+                        <i data-lucide="copy" style="width: 15px; height: 15px;"></i>
+                        <span>复制命令</span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -1389,239 +1466,361 @@
     <footer>
         <div class="container">
             <p>China Legal OS · 面向中国大陆企业法务的模块化 AI 工作系统 ｜ 采用 <a href="https://github.com/245678000000/china-legal-os/blob/main/LICENSE" target="_blank">MIT 开源许可证</a></p>
-            <p style="margin-top: 8px; font-size: 12px; color: #64748b;">法域：中华人民共和国大陆地区（不含港澳台及涉外法域） ｜ 本系统生成内容供企业内部工作参考，不替代执业律师法律意见</p>
+            <p style="margin-top: 10px; font-size: 13px; color: #64748b;">法域：中华人民共和国大陆地区（不含港澳台及涉外法域） ｜ 本系统生成内容供企业内部工作参考，不替代执业律师法律意见</p>
         </div>
     </footer>
 
     <!-- 交互式脚本 -->
     <script>
-        // macOS 工作台 3 套动态数据
+        // 1. 初始化 Lucide 图标
+        lucide.createIcons();
+
+        // 2. Canvas 物理粒子与星轨力场系统
+        const canvas = document.getElementById('interactive-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 140 };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 2 + 1;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = (Math.random() * 25) + 5;
+                this.color = Math.random() > 0.4 ? 'rgba(56, 189, 248, 0.45)' : 'rgba(129, 140, 248, 0.35)';
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+            update() {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let forceDirectionX = dx / distance;
+                let forceDirectionY = dy / distance;
+                let maxDistance = mouse.radius;
+                let force = (maxDistance - distance) / maxDistance;
+                let directionX = forceDirectionX * force * this.density;
+                let directionY = forceDirectionY * force * this.density;
+
+                if (distance < mouse.radius) {
+                    this.x -= directionX;
+                    this.y -= directionY;
+                } else {
+                    if (this.x !== this.baseX) {
+                        let dx = this.x - this.baseX;
+                        this.x -= dx / 12;
+                    }
+                    if (this.y !== this.baseY) {
+                        let dy = this.y - this.baseY;
+                        this.y -= dy / 12;
+                    }
+                }
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const numberOfParticles = (canvas.width * canvas.height) / 14000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let x = Math.random() * canvas.width;
+                let y = Math.random() * canvas.height;
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        function connectParticles() {
+            let opacityValue = 1;
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let dx = particles[a].x - particles[b].x;
+                    let dy = particles[a].y - particles[b].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 110) {
+                        opacityValue = 1 - (distance / 110);
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${opacityValue * 0.15})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateCanvas() {
+            requestAnimationFrame(animateCanvas);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].draw();
+                particles[i].update();
+            }
+            connectParticles();
+        }
+
+        resizeCanvas();
+        animateCanvas();
+
+        // 3. macOS 法务工作台多 Tab 动态数据
         const macWorkspaceTabs = [
             {
-                // Tab 0: Contract-Review.md
                 status: "Review Basis: 通用商业标准 ｜ G4 PASS",
                 leftHtml: `
-                    <div class="wb-pane-title">
+                    <div class="wb-label">
                         <span>Fact Sheet 事实抽取</span>
-                        <span style="color: #34d399;">G1 PASS</span>
+                        <span style="color: #34d399; display: flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>G1 PASS</span>
                     </div>
-                    <div class="fact-tag ft-confirmed">✓ CONFIRMED 确凿事实</div>
-                    <div class="fact-item-text">
+                    <div class="tag-pill tp-green"><i data-lucide="check" style="width: 13px; height: 13px;"></i>CONFIRMED 确凿事实</div>
+                    <div class="tag-detail">
                         我方为主体甲方（采购方）；合同总金额 150 万元；定制大数据分析平台。
                     </div>
-                    <div class="fact-tag ft-missing">! MISSING 关键缺失</div>
-                    <div class="fact-item-text">
+                    <div class="tag-pill tp-rose"><i data-lucide="alert-triangle" style="width: 13px; height: 13px;"></i>MISSING 关键缺失</div>
+                    <div class="tag-detail">
                         实质性业务验收标准缺失；管辖法院未约定；付款进度过于前置。
                     </div>
-                    <div class="fact-tag ft-alleged">? ALLEGED 单方主张</div>
-                    <div class="fact-item-text">
+                    <div class="tag-pill tp-amber"><i data-lucide="help-circle" style="width: 13px; height: 13px;"></i>ALLEGED 单方主张</div>
+                    <div class="tag-detail">
                         乙方主张“定制源码全归乙方系行业惯例”（进入对抗抗辩驳回）。
                     </div>
                 `,
                 centerHtml: `
-                    <div style="color: #38bdf8; margin-bottom: 12px;">// 第 3.1 条 知识产权归属审查</div>
-                    <div class="contract-line">3.1 乙方在履行本协议过程中形成的所有技术成果、源代码、算法模型...</div>
-                    <div class="contract-line"><span class="highlight-strike">其所有权均独家归属于乙方。</span></div>
-                    <div class="contract-line"><span class="highlight-insert">+ 修改为：“自产生之日起独家归属于甲方所有。”</span></div>
+                    <div style="color: #38bdf8; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="code-2" style="width: 15px; height: 15px;"></i>
+                        <span>第 3.1 条 知识产权归属审查</span>
+                    </div>
+                    <div class="code-row">3.1 乙方在履行本协议过程中形成的所有技术成果、源代码、算法模型...</div>
+                    <div class="code-row"><span class="str-del">其所有权均独家归属于乙方。</span></div>
+                    <div class="code-row"><span class="str-add">+ 修改为：“自产生之日起独家归属于甲方所有。”</span></div>
 
-                    <div class="floating-finding-card">
-                        <span class="ff-tag">RED LINE 致命红线</span>
-                        <div class="ff-title">出资 150 万定制开发却丧失源码所有权</div>
-                        <div class="ff-desc">
+                    <div class="finding-box">
+                        <span class="finding-badge"><i data-lucide="alert-octagon" style="width: 12px; height: 12px;"></i>RED LINE 致命红线</span>
+                        <div class="finding-name">出资 150 万定制开发却丧失源码所有权</div>
+                        <div class="finding-text">
                             依据《民法典》第 852 条〔条号未核验〕，委托开发成果权属由双方约定。出资定制却让渡全部源码权属，后续将无法自主维护与二次开发。
                         </div>
                     </div>
 
-                    <div style="color: #38bdf8; margin-top: 20px; margin-bottom: 12px;">// 第 4.1 条 违约金数值推演</div>
-                    <div class="contract-line">4.1 每逾期一日按合同总金额的万分之五支付违约金，累计上限 20%...</div>
+                    <div style="color: #38bdf8; margin-top: 22px; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="calculator" style="width: 15px; height: 15px;"></i>
+                        <span>第 4.1 条 违约金数值推演</span>
+                    </div>
+                    <div class="code-row">4.1 每逾期一日按合同总金额的万分之五支付违约金，累计上限 20%...</div>
                     
-                    <div class="floating-finding-card" style="background: #231942; border-color: rgba(245, 158, 11, 0.45);">
-                        <span class="ff-tag" style="background: #f59e0b;">NUMERIC 推演警示</span>
-                        <div class="ff-title">400 天违约金触顶时间陷阱</div>
-                        <div class="ff-desc">
+                    <div class="finding-box" style="background: #231942; border-color: rgba(245, 158, 11, 0.45);">
+                        <span class="finding-badge" style="background: #f59e0b;"><i data-lucide="clock" style="width: 12px; height: 12px;"></i>NUMERIC 推演警示</span>
+                        <div class="finding-name">400 天违约金触顶时间陷阱</div>
+                        <div class="finding-text">
                             日费率 0.05% × 违约天数达到 20% 上限：需连续违约 <strong>400 天</strong> 才触顶！约束力极弱，建议提升至 0.1%/天，60 天触顶解约。
                         </div>
                     </div>
                 `,
                 rightHtml: `
-                    <div class="wb-pane-title">
+                    <div class="wb-label">
                         <span>Business Decision 商业落地</span>
-                        <span style="color: #818cf8;">G4 PASS</span>
+                        <span style="color: #818cf8; display: flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>G4 PASS</span>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">1. 能不能做？</div>
-                        <div class="decision-val" style="color: #34d399;">有条件可以（按修订版签约）</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="target" style="width: 13px; height: 13px;"></i>1. 能不能做？</div>
+                        <div class="d-body" style="color: #34d399;">有条件可以（按修订版签约）</div>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">2. 核心退让底线 (Fallback)</div>
-                        <div class="decision-val">双方共有，我方享有永久免费商业化使用与自主二次开发权。</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="corner-down-right" style="width: 13px; height: 13px;"></i>2. 核心退让底线 (Fallback)</div>
+                        <div class="d-body">双方共有，我方享有永久免费商业化使用与自主二次开发权。</div>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">3. 审批触发机制</div>
-                        <div class="decision-val">对方拒绝修改源码权属时，触发技术分管 VP + 法务总监终审。</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="shield-alert" style="width: 13px; height: 13px;"></i>3. 审批触发机制</div>
+                        <div class="d-body">对方拒绝修改源码权属时，触发技术分管 VP + 法务总监终审。</div>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">4. 今日行动动作</div>
-                        <div class="decision-val" style="color: #38bdf8;">将 8 列红线审查意见表及修订对照版下发业务对外谈判。</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="calendar" style="width: 13px; height: 13px;"></i>4. 今日行动动作</div>
+                        <div class="d-body" style="color: #38bdf8;">将 8 列红线审查意见表及修订对照版下发业务对外谈判。</div>
                     </div>
                 `
             },
             {
-                // Tab 1: Evidence-Matrix.md
                 status: "Review Basis: 商业秘密侵权维权专项 ｜ 全案证据强度: 较强",
                 leftHtml: `
-                    <div class="wb-pane-title">
+                    <div class="wb-label">
                         <span>法定三要件拆解</span>
-                        <span style="color: #38bdf8;">G3 PASS</span>
+                        <span style="color: #38bdf8; display: flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>G3 PASS</span>
                     </div>
-                    <div class="fact-tag ft-confirmed">E1 非公开性 (秘密性)</div>
-                    <div class="fact-item-text">
+                    <div class="tag-pill tp-green"><i data-lucide="lock" style="width: 13px; height: 13px;"></i>E1 非公开性 (秘密性)</div>
+                    <div class="tag-detail">
                         算法未公开发表，内部研发版本库受控管理，待出具非公知鉴定。
                     </div>
-                    <div class="fact-tag ft-confirmed">E2 保密措施 (已闭环)</div>
-                    <div class="fact-item-text">
+                    <div class="tag-pill tp-green"><i data-lucide="file-check" style="width: 13px; height: 13px;"></i>E2 保密措施 (已闭环)</div>
+                    <div class="tag-detail">
                         签署《保密协议》与《离职承诺书》原件，VPN 权限分级日志确凿。
                     </div>
-                    <div class="fact-tag ft-alleged">E3 实际使用 (待补强)</div>
-                    <div class="fact-item-text">
+                    <div class="tag-pill tp-amber"><i data-lucide="search" style="width: 13px; height: 13px;"></i>E3 实际使用 (待补强)</div>
+                    <div class="tag-detail">
                         竞对产品是否已集成涉案代码属 Alleged，严禁直接断言已构成使用。
                     </div>
                 `,
                 centerHtml: `
-                    <div style="color: #38bdf8; margin-bottom: 12px;">// 24h 紧急时限敏感取证倒计时</div>
+                    <div style="color: #38bdf8; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="clock" style="width: 15px; height: 15px;"></i>
+                        <span>24h 紧急时限敏感取证倒计时</span>
+                    </div>
                     
-                    <div class="floating-finding-card" style="background: #3b0716; border-color: rgba(244, 63, 94, 0.45);">
-                        <span class="ff-tag" style="background: #e11d48;">🚨 P0 紧急动作（今日 18:00 前）</span>
-                        <div class="ff-title">涉案办公设备物理封存与 Hash 校验</div>
-                        <div class="ff-desc">
+                    <div class="finding-box" style="background: #3b0716; border-color: rgba(244, 63, 94, 0.45);">
+                        <span class="finding-badge" style="background: #e11d48;"><i data-lucide="alert-circle" style="width: 12px; height: 12px;"></i>🚨 P0 紧急动作（今日 18:00 前）</span>
+                        <div class="finding-name">涉案办公设备物理封存与 Hash 校验</div>
+                        <div class="finding-text">
                             IT 团队立即镜像封存李某工作电脑硬盘；联系公证处对 VPN 80GB 下载日志做司法存证公证，防止电子证据灭失。
                         </div>
                     </div>
 
-                    <div class="floating-finding-card" style="background: #231942; border-color: rgba(167, 139, 250, 0.4);">
-                        <span class="ff-tag" style="background: #7c3aed;">⚠️ P1 取证动作（3 日内）</span>
-                        <div class="ff-title">竞对公开技术与产品代码比对</div>
-                        <div class="ff-desc">
+                    <div class="finding-box" style="background: #231942; border-color: rgba(167, 139, 250, 0.4);">
+                        <span class="finding-badge" style="background: #7c3aed;"><i data-lucide="eye" style="width: 12px; height: 12px;"></i>⚠️ P1 取证动作（3 日内）</span>
+                        <div class="finding-name">竞对公开技术与产品代码比对</div>
+                        <div class="finding-text">
                             对竞对官网招聘、公开测试版 App 进行反编译提取与特征比对，固定技术同一性初步线索。
                         </div>
                     </div>
 
-                    <div class="floating-finding-card" style="background: #0f231b; border-color: rgba(52, 211, 153, 0.4);">
-                        <span class="ff-tag" style="background: #059669;">⚠️ P2 阻断动作（7 日内）</span>
-                        <div class="ff-title">向竞对寄发《知识产权合规告知函》</div>
-                        <div class="ff-desc">
+                    <div class="finding-box" style="background: #0f231b; border-color: rgba(52, 211, 153, 0.4);">
+                        <span class="finding-badge" style="background: #059669;"><i data-lucide="send" style="width: 12px; height: 12px;"></i>⚠️ P2 阻断动作（7 日内）</span>
+                        <div class="finding-name">向竞对寄发《知识产权合规告知函》</div>
+                        <div class="finding-text">
                             明确李某负有法定保密义务，阻断竞对在后续诉讼中的“善意取得”抗辩。
                         </div>
                     </div>
                 `,
                 rightHtml: `
-                    <div class="wb-pane-title">
+                    <div class="wb-label">
                         <span>维权救济策略回路</span>
-                        <span style="color: #fb7185;">Lane C (重大争议)</span>
+                        <span style="color: #fb7185; font-weight: 700;">Lane C (重大争议)</span>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">1. 刑民交叉门槛</div>
-                        <div class="decision-val">涉案秘密研发成本 > 30万元，达到侵犯商业秘密罪经侦立案追诉标准。</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="shield" style="width: 13px; height: 13px;"></i>1. 刑民交叉门槛</div>
+                        <div class="d-body">涉案秘密研发成本 > 30万元，达到侵犯商业秘密罪经侦立案追诉标准。</div>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">2. 诉前行为保全禁令</div>
-                        <div class="decision-val" style="color: #fbbf24;">若发现竞对集成发布，立即向知识产权法院申请禁令阻断上线。</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="ban" style="width: 13px; height: 13px;"></i>2. 诉前行为保全禁令</div>
+                        <div class="d-body" style="color: #fbbf24;">若发现竞对集成发布，立即向知识产权法院申请禁令阻断上线。</div>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">3. 今日第一责任人</div>
-                        <div class="decision-val" style="color: #38bdf8;">IT 安全总监 + 法务知产诉讼负责人。</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="user-check" style="width: 13px; height: 13px;"></i>3. 今日第一责任人</div>
+                        <div class="d-body" style="color: #38bdf8;">IT 安全总监 + 法务知产诉讼负责人。</div>
                     </div>
                 `
             },
             {
-                // Tab 2: Executive-Brief.md
                 status: "Review Basis: 管理层决策专报 ｜ 标的额: 150万元 ｜ Lane: B",
                 leftHtml: `
-                    <div class="wb-pane-title">
+                    <div class="wb-label">
                         <span>The Decision 决策事项</span>
-                        <span style="color: #34d399;">G4 PASS</span>
+                        <span style="color: #34d399; display: flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>G4 PASS</span>
                     </div>
-                    <div class="fact-tag ft-confirmed">决策议题</div>
-                    <div class="fact-item-text">
+                    <div class="tag-pill tp-green"><i data-lucide="check" style="width: 13px; height: 13px;"></i>决策议题</div>
+                    <div class="tag-detail">
                         是否在现有版本基础上签署《大数据服务协议》，或依据法务建议要求实质性修订。
                     </div>
-                    <div class="fact-tag ft-missing">风险全景敞口</div>
-                    <div class="fact-item-text">
+                    <div class="tag-pill tp-rose"><i data-lucide="alert-octagon" style="width: 13px; height: 13px;"></i>风险全景敞口</div>
+                    <div class="tag-detail">
                         <strong>BLACK / RED</strong> 级别：定制资产流失、解约罚没 30%、索赔被死锁在 15 万。
                     </div>
                 `,
                 centerHtml: `
-                    <div style="color: #38bdf8; margin-bottom: 12px;">// 一分钟法总要点（Bottom Line）</div>
+                    <div style="color: #38bdf8; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="file-check" style="width: 15px; height: 15px;"></i>
+                        <span>一分钟法总要点（Bottom Line）</span>
+                    </div>
                     
-                    <div class="floating-finding-card" style="background: #1e1b4b; border-color: rgba(99, 102, 241, 0.5);">
-                        <span class="ff-tag" style="background: #4f46e5;">BOTTOM LINE 一分钟要点</span>
-                        <div class="ff-title">严重失衡的商业与法律对价</div>
-                        <div class="ff-desc">
+                    <div class="finding-box" style="background: #1e1b4b; border-color: rgba(99, 102, 241, 0.5);">
+                        <span class="finding-badge" style="background: #4f46e5;"><i data-lucide="zap" style="width: 12px; height: 12px;"></i>BOTTOM LINE 一分钟要点</span>
+                        <div class="finding-name">严重失衡的商业与法律对价</div>
+                        <div class="finding-text">
                             当前合同存在严重权利义务倒挂：我方全额出资 150 万定制开发，但成果所有权完全归乙方；乙方迟延违约金需违约 400 天才触顶，且赔偿被死锁在已付金额的 10%（最高 15 万），而我方付款迟延 5 日即面临被单方解约并罚没 30%（45 万元）。
                         </div>
                     </div>
 
-                    <div style="color: #38bdf8; margin-top: 20px; margin-bottom: 12px;">// 推荐方案与谈判筹码</div>
+                    <div style="color: #38bdf8; margin-top: 22px; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="scale" style="width: 15px; height: 15px;"></i>
+                        <span>推荐方案与谈判筹码</span>
+                    </div>
                     
-                    <div class="floating-finding-card" style="background: #0f231b; border-color: rgba(52, 211, 153, 0.45);">
-                        <span class="ff-tag" style="background: #059669;">RECOMMENDATION 推荐方案</span>
-                        <div class="ff-title">暂缓签约，以修改版对等条款重新谈判</div>
-                        <div class="ff-desc">
+                    <div class="finding-box" style="background: #0f231b; border-color: rgba(52, 211, 153, 0.45);">
+                        <span class="finding-badge" style="background: #059669;"><i data-lucide="thumbs-up" style="width: 12px; height: 12px;"></i>RECOMMENDATION 推荐方案</span>
+                        <div class="finding-name">暂缓签约，以修改版对等条款重新谈判</div>
+                        <div class="finding-text">
                             坚持成果所有权归我方；若对方以 SaaS 逻辑抗辩，合同总价必须相应大幅下调 40% 以上（转为标准化软件采购），并由业务分管 VP 审批。
                         </div>
                     </div>
                 `,
                 rightHtml: `
-                    <div class="wb-pane-title">
+                    <div class="wb-label">
                         <span>审批与升级权限矩阵</span>
-                        <span style="color: #34d399;">G4 PASS</span>
+                        <span style="color: #34d399; display: flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>G4 PASS</span>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">1. 业务线审批人</div>
-                        <div class="decision-val">技术研发分管副总裁 (VP)</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="users" style="width: 13px; height: 13px;"></i>1. 业务线审批人</div>
+                        <div class="d-body">技术研发分管副总裁 (VP)</div>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">2. 采购/商务终审</div>
-                        <div class="decision-val">集团采购负责人 + 财务总监 (CFO)</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="dollar-sign" style="width: 13px; height: 13px;"></i>2. 采购/商务终审</div>
+                        <div class="d-body">集团采购负责人 + 财务总监 (CFO)</div>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">3. 法务负责人</div>
-                        <div class="decision-val" style="color: #38bdf8;">首席法务官 (CLO)</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="shield" style="width: 13px; height: 13px;"></i>3. 法务负责人</div>
+                        <div class="d-body" style="color: #38bdf8;">首席法务官 (CLO)</div>
                     </div>
-                    <div class="decision-box">
-                        <div class="decision-label">4. 今日执行动作</div>
-                        <div class="decision-val" style="color: #34d399;">法务部向业务团队出具红线修改对照表，当日启动外部商务谈判。</div>
+                    <div class="decision-card">
+                        <div class="d-head"><i data-lucide="calendar" style="width: 13px; height: 13px;"></i>4. 今日执行动作</div>
+                        <div class="d-body" style="color: #34d399;">法务部向业务团队出具红线修改对照表，当日启动外部商务谈判。</div>
                     </div>
                 `
             }
         ];
 
-        // 切换 macOS 工作台 Tab
         function switchMacTab(tabIdx) {
-            document.querySelectorAll('.mac-tab-btn').forEach((btn, i) => {
+            document.querySelectorAll('.mac-tab-trigger').forEach((btn, i) => {
                 if (i === tabIdx) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
 
             const data = macWorkspaceTabs[tabIdx];
-            document.getElementById('mac-status-tag').innerHTML = `<span style="color: #34d399;">●</span> ${data.status}`;
+            document.getElementById('mac-status-text').innerHTML = `<i data-lucide="check-circle" style="width: 14px; height: 14px; color: #34d399;"></i> ${data.status}`;
             
-            const bodyEl = document.getElementById('mac-content-body');
-            bodyEl.classList.remove('fade-in');
-            void bodyEl.offsetWidth; // 触发重绘动画
-            bodyEl.classList.add('fade-in');
+            const gridEl = document.getElementById('mac-content-grid');
+            gridEl.classList.remove('fade-transition');
+            void gridEl.offsetWidth; // 触发回流重绘
+            gridEl.classList.add('fade-transition');
 
-            bodyEl.innerHTML = `
-                <div class="wb-left-pane">${data.leftHtml}</div>
-                <div class="wb-center-pane">${data.centerHtml}</div>
-                <div class="wb-right-pane">${data.rightHtml}</div>
+            gridEl.innerHTML = `
+                <div class="wb-sidebar">${data.leftHtml}</div>
+                <div class="wb-editor">${data.centerHtml}</div>
+                <div class="wb-panel">${data.rightHtml}</div>
             `;
+
+            lucide.createIcons();
         }
 
-        // 初始化加载第一个 Tab
+        // 初始化工作台
         switchMacTab(0);
 
-        // 4 套案例沙盒数据
+        // 4. 4 套实战案例数据
         const caseDatasets = [
             {
                 input: `大数据技术服务采购协议（标的 150 万元）\n甲方：北京知远数据科技有限公司（采购方）\n乙方：华东云智信息系统有限公司（服务方）\n\n第三条 知识产权归属\n3.1 乙方在履行过程中形成的所有源代码、模型所有权独家归属于乙方。\n3.2 甲方仅享有普通使用许可。\n\n第四条 违约金与责任限制\n4.1 迟延违约金：日万分之五，累计上限 20%。\n4.2 责任上限：乙方承担的全部赔偿总额不得超过已付金额的 10%。`,
@@ -1642,7 +1841,7 @@
         ];
 
         function switchCaseTab(idx) {
-            document.querySelectorAll('.sb-tab-btn').forEach((btn, i) => {
+            document.querySelectorAll('.sb-trigger-btn').forEach((btn, i) => {
                 if (i === idx) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
@@ -1650,12 +1849,17 @@
             document.getElementById('sb-output-box').textContent = caseDatasets[idx].output;
         }
 
+        // 5. 复制安装命令
         function copyInstallScript(btn) {
             const cmd = "git clone https://github.com/245678000000/china-legal-os.git && cd china-legal-os && ./scripts/install.sh";
             navigator.clipboard.writeText(cmd).then(() => {
-                const old = btn.textContent;
-                btn.textContent = "已复制 ✓";
-                setTimeout(() => { btn.textContent = old; }, 2000);
+                const oldContent = btn.innerHTML;
+                btn.innerHTML = `<i data-lucide="check" style="width: 15px; height: 15px;"></i><span>已复制</span>`;
+                lucide.createIcons();
+                setTimeout(() => { 
+                    btn.innerHTML = oldContent; 
+                    lucide.createIcons();
+                }, 2000);
             });
         }
     </script>
